@@ -10,7 +10,7 @@ export function errorMessage(e: unknown): string {
       case 'voting_closed':
         return 'A votação está encerrada.';
       case 'not_admin':
-        return 'Este usuário não tem acesso de administrador.';
+        return 'Esta conta não tem acesso. O painel é liberado para quem é admin ou link_staff no portfolio da Link.';
       case 'slot_taken':
         return 'Essa posição já está ocupada por outra startup.';
       default:

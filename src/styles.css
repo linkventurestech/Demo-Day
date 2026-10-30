@@ -237,3 +237,4 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
 .adm-login input { height: 52px; padding: 0 16px; border-radius: 8px; border: 2px solid var(--white); font: inherit; font-size: 16px; color: var(--navy); outline: none; }
 .adm-login .alert { margin: 0; font-size: 13px; color: var(--red-soft); }
 .adm-login .hint { margin: 4px 0 0; font-size: 13px; color: var(--mist); line-height: 1.4; }
+.btn-gold.outline { background: transparent; color: var(--white); border-color: rgba(255, 255, 255, 0.5); }

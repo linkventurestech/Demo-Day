@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { api } from '../lib/api';
 import { errorMessage } from '../lib/errors';
 
-export function AdminLogin({ onLogin }: { onLogin: (email: string) => void }) {
+export function AdminLogin({ initialError = '', onLogin }: { initialError?: string; onLogin: (email: string) => void }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [error, setError] = useState(initialError);
   const [busy, setBusy] = useState(false);
 
   const submit = async (e: React.FormEvent) => {
@@ -28,7 +28,22 @@ export function AdminLogin({ onLogin }: { onLogin: (email: string) => void }) {
       <div className="box">
         <p className="mono">Link Ventures · Admin</p>
         <h1>Demo Day</h1>
-        <form onSubmit={submit}>
+        {api.adminSignInWithGoogle && (
+          <>
+            <button
+              type="button"
+              className="btn-gold"
+              style={{ marginTop: 32 }}
+              onClick={() => api.adminSignInWithGoogle!().catch((e) => setError(errorMessage(e)))}
+            >
+              Entrar com Google
+            </button>
+            <p className="hint" style={{ marginTop: 12 }}>
+              Mesma conta do portfolio da Link. Ou entre com e-mail e senha:
+            </p>
+          </>
+        )}
+        <form onSubmit={submit} style={api.adminSignInWithGoogle ? { marginTop: 16 } : undefined}>
           <label className="mono" htmlFor="adm-email">
             E-mail
           </label>
@@ -42,13 +57,13 @@ export function AdminLogin({ onLogin }: { onLogin: (email: string) => void }) {
               {error}
             </p>
           )}
-          <button type="submit" className="btn-gold" disabled={busy}>
+          <button type="submit" className={api.adminSignInWithGoogle ? 'btn-gold outline' : 'btn-gold'} disabled={busy}>
             {busy ? 'Entrando…' : 'Entrar no painel'}
           </button>
           <p className="hint">
             {api.mode === 'demo'
               ? 'Modo demonstração: qualquer e-mail entra. Os dados ficam só neste navegador.'
-              : 'Acesso restrito à equipe da Link. Contas são criadas no Supabase e liberadas na tabela de admins.'}
+              : 'Acesso para quem é admin ou link_staff no portfolio da Link.'}
           </p>
         </form>
       </div>

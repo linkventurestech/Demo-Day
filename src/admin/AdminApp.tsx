@@ -34,9 +34,13 @@ export function AdminApp() {
   const [data, setData] = useState<AdminData | null>(null);
   const [error, setError] = useState('');
   const [page, setPage] = useState<PageId>(pageFromHash);
+  const [authError, setAuthError] = useState('');
 
   useEffect(() => {
-    api.adminCurrent().then(setAdmin, () => setAdmin(null));
+    api.adminCurrent().then(setAdmin, (e) => {
+      setAuthError(errorMessage(e));
+      setAdmin(null);
+    });
     const onHash = () => setPage(pageFromHash());
     window.addEventListener('hashchange', onHash);
     return () => window.removeEventListener('hashchange', onHash);
@@ -60,7 +64,7 @@ export function AdminApp() {
   }, [admin, reload]);
 
   if (admin === undefined) return null;
-  if (!admin) return <AdminLogin onLogin={setAdmin} />;
+  if (!admin) return <AdminLogin initialError={authError} onLogin={setAdmin} />;
 
   const counts: Partial<Record<PageId, number>> = data
     ? {

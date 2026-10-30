@@ -116,6 +116,8 @@ export interface Api {
 
   // Admin
   adminSignIn(email: string, password: string): Promise<void>;
+  /** Login Google do portfolio; só existe com Supabase. Redireciona a página. */
+  adminSignInWithGoogle?(): Promise<void>;
   adminSignOut(): Promise<void>;
   /** E-mail do admin logado, ou null. */
   adminCurrent(): Promise<string | null>;

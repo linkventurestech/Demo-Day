@@ -14,30 +14,42 @@ npm install
 npm run dev
 ```
 
-Sem `.env`, o app abre em **modo demonstração**: os dados ficam só no navegador (entre com `demo@lsb.edu.br`; no admin, qualquer e-mail). Serve para testar o fluxo antes de ligar o banco.
+O `npm run dev` abre em **modo demonstração**: os dados ficam só no navegador (entre com `demo@lsb.edu.br`; no admin, qualquer e-mail). Para usar o banco real no dev, copie `.env.example` para `.env.local`.
 
-## Ligar o banco (Supabase)
+`npm run build` já usa o banco real (`.env.production`). Publique a pasta `dist`; Vercel e Netlify já estão configurados para a rota `/admin`.
 
-1. Crie um projeto no Supabase e rode, no SQL Editor, `supabase/migrations/20261030120000_demo_day.sql` e depois `supabase/seed.sql` (startups do protótipo, opcional). Com a CLI: `supabase link` + `supabase db push`.
-2. Crie o usuário da equipe em **Authentication → Users → Add user** (e-mail + senha) e libere como admin:
-   ```sql
-   insert into public.admins (email) values ('voce@link.com');
-   ```
-3. Copie `.env.example` para `.env` com a URL e a chave publishable do projeto (Settings → API).
-4. `npm run build` e publique a pasta `dist` (Vercel e Netlify já estão configurados para a rota `/admin`).
+## Banco
+
+Usa o **mesmo projeto Supabase do portfolio** (`link_portfolio`). Tudo do Demo Day tem o prefixo `demoday_app_` e não altera nenhum objeto do portfolio (nem o módulo `demoday_*` de inscrição de startups). As migrations em `supabase/migrations/` já foram aplicadas; uma cópia fica também no repo do portfolio-hub, que é dono do histórico do banco.
+
+| Tabela | O que guarda | Quem lê |
+| --- | --- | --- |
+| `demoday_app_settings` | nome do evento, texto de entrada, votação aberta | todos |
+| `demoday_app_blocks` | blocos da ordem (Inspiration, Startup School…) e nº de posições | todos |
+| `demoday_app_startups` | startups, posição no bloco, logo, founders | todos |
+| `demoday_app_jurors` | jurados | todos |
+| `demoday_app_attendees` | e-mails liberados (nome, empresa, último acesso) | equipe |
+| `demoday_app_ratings` | nota e interesses por pessoa × startup | equipe |
+| `demoday_app_sessions` | tokens de sessão do público | ninguém (só funções) |
+
+### Quem acessa o admin
+
+Quem já é **admin** ou **link_staff** no portfolio (`user_roles`), com a mesma conta: botão "Entrar com Google" ou e-mail e senha. Não há lista de admins separada.
+
+Para o "Entrar com Google" voltar para o Demo Day (e não para o portfolio), a URL publicada precisa estar em **Supabase → Authentication → URL Configuration → Redirect URLs**, por exemplo `https://demoday.seudominio.com/admin`. Sem isso o Supabase manda de volta para a Site URL do portfolio.
 
 ## Segurança
 
-- O público nunca lê as tabelas de inscritos ou respostas. Login e envio passam por funções `SECURITY DEFINER` (`attendee_login`, `attendee_my_ratings`, `attendee_submit_rating`) que validam o token de sessão.
+- O público nunca lê as tabelas de inscritos ou respostas. Login e envio passam por funções `SECURITY DEFINER` (`demoday_app_login`, `demoday_app_my_ratings`, `demoday_app_submit_rating`) que validam o token de sessão.
 - Remover um e-mail no admin derruba a sessão dessa pessoa e apaga as respostas dela.
 - Com a votação encerrada, o banco recusa novos envios.
-- Como pedido, o acesso é só pelo e-mail (sem senha nem código): quem souber o e-mail de um inscrito consegue entrar como ele. Se isso virar problema, dá para trocar por um código enviado por e-mail sem mudar o resto.
+- Como pedido, o acesso do público é só pelo e-mail (sem senha nem código): quem souber o e-mail de um inscrito consegue entrar como ele. Se isso virar problema, dá para trocar por um código enviado por e-mail sem mudar o resto.
 
 ## Estrutura
 
 ```
-supabase/migrations   schema, RLS e funções
-supabase/seed.sql     conteúdo do protótipo
+supabase/migrations   schema, RLS e funções (prefixo demoday_app_)
+supabase/seed.sql     conteúdo do protótipo (já carregado)
 src/public            app do público (login, ordem, avaliação, jurados)
 src/admin             painel (resultados, conexões, inscritos, startups, jurados, evento)
 src/lib/api           Supabase + modo demonstração, mesmo contrato
