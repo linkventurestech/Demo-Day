@@ -58,7 +58,11 @@ export function Login({ settings, notice, onLogin }: { settings?: EventSettings;
           {busy ? 'Entrando…' : 'Entrar'}
         </button>
       </form>
-      {api.mode === 'demo' && <p className="demo-badge">Modo demonstração · teste com demo@lsb.edu.br</p>}
+      {api.mode === 'demo' && (
+        <p className="demo-badge">
+          Modo demonstração · teste com demo@lsb.edu.br · <a href="#admin">Abrir painel admin</a>
+        </p>
+      )}
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { api } from '../lib/api';
 import { download, parseAttendees, toCsv } from '../lib/csv';
 import { errorMessage } from '../lib/errors';
 import { fmtDate } from '../lib/format';
+import { ConfirmButton } from '../ui';
 import { PageHead, type PageProps } from './AdminApp';
 
 export function Attendees({ data, reload }: PageProps) {
@@ -46,9 +47,7 @@ export function Attendees({ data, reload }: PageProps) {
     }
   };
 
-  const remove = async (id: string, email: string) => {
-    const n = ratingsBy.get(id) ?? 0;
-    if (!confirm(`Remover ${email}?${n ? `\n\nAs ${n} avaliação(ões) dessa pessoa também serão apagadas.` : ''}`)) return;
+  const remove = async (id: string) => {
     try {
       await api.deleteAttendees([id]);
       await reload();
@@ -175,9 +174,12 @@ export function Attendees({ data, reload }: PageProps) {
                   <td className="muted small nowrap">{a.last_login_at ? fmtDate(a.last_login_at) : 'Nunca'}</td>
                   <td className="num">{ratingsBy.get(a.id) ?? 0}</td>
                   <td className="num">
-                    <button className="btn sm danger" onClick={() => remove(a.id, a.email)}>
+                    <ConfirmButton
+                      confirmLabel={ratingsBy.get(a.id) ? `Remover e apagar ${ratingsBy.get(a.id)} avaliação(ões)?` : 'Confirmar remoção'}
+                      onConfirm={() => remove(a.id)}
+                    >
                       Remover
-                    </button>
+                    </ConfirmButton>
                   </td>
                 </tr>
               ))}

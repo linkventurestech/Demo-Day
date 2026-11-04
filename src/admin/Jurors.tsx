@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { api, type Juror } from '../lib/api';
 import { errorMessage } from '../lib/errors';
 import { toSquareDataUrl } from '../lib/image';
+import { ConfirmButton } from '../ui';
 import { PageHead, type PageProps } from './AdminApp';
 
 type Form = Omit<Juror, 'id'> & { id?: string };
@@ -28,7 +29,6 @@ export function Jurors({ data, reload }: PageProps) {
   };
 
   const remove = async (j: Juror) => {
-    if (!confirm(`Remover ${j.name}?`)) return;
     await api.deleteJuror(j.id);
     await reload();
     if (form?.id === j.id) setForm(null);
@@ -78,15 +78,9 @@ export function Jurors({ data, reload }: PageProps) {
                       </div>
                     </td>
                     <td className="num">
-                      <button
-                        className="btn sm danger"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          remove(j);
-                        }}
-                      >
+                      <ConfirmButton confirmLabel="Confirmar remoção" onConfirm={() => remove(j)}>
                         Remover
-                      </button>
+                      </ConfirmButton>
                     </td>
                   </tr>
                 ))}

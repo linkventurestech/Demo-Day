@@ -24,8 +24,12 @@ export interface PageProps {
   reload: () => Promise<void>;
 }
 
+// Em /admin a página vai no hash (#conexoes…); no link único (#admin) vira #admin-<página>.
+export const adminByPath = () => location.pathname.replace(/\/+$/, '').endsWith('/admin');
+const hashPrefix = () => (adminByPath() ? '' : 'admin-');
+
 const pageFromHash = (): PageId => {
-  const h = location.hash.slice(1);
+  const h = location.hash.slice(1).replace(/^admin-?/, '');
   return (PAGES.find((p) => p.id === h)?.id ?? 'results') as PageId;
 };
 
@@ -90,7 +94,7 @@ export function AdminApp() {
               type="button"
               aria-current={page === p.id ? 'page' : undefined}
               onClick={() => {
-                location.hash = p.id;
+                location.hash = hashPrefix() + p.id;
                 setPage(p.id);
               }}
             >
@@ -104,7 +108,7 @@ export function AdminApp() {
           <span className="who" title={admin}>
             {admin}
           </span>
-          <a className="linkbtn" href="/" target="_blank" rel="noreferrer">
+          <a className="linkbtn" href={adminByPath() ? '/' : '#'} target={adminByPath() ? '_blank' : undefined} rel="noreferrer">
             Abrir app do público ↗
           </a>
           <button

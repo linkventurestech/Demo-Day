@@ -1,4 +1,30 @@
+import { useEffect, useState } from 'react';
 import { initials } from './lib/lineup';
+
+/** Botão de ação destrutiva: o primeiro clique arma, o segundo confirma. Volta sozinho em 4s. */
+export function ConfirmButton({ children, confirmLabel, onConfirm, className = 'btn sm danger' }: { children: React.ReactNode; confirmLabel: string; onConfirm: () => void; className?: string }) {
+  const [armed, setArmed] = useState(false);
+  useEffect(() => {
+    if (!armed) return;
+    const t = setTimeout(() => setArmed(false), 4000);
+    return () => clearTimeout(t);
+  }, [armed]);
+  return (
+    <button
+      type="button"
+      className={className + (armed ? ' armed' : '')}
+      onClick={(e) => {
+        e.stopPropagation();
+        if (armed) {
+          setArmed(false);
+          onConfirm();
+        } else setArmed(true);
+      }}
+    >
+      {armed ? confirmLabel : children}
+    </button>
+  );
+}
 
 export const Chevron = ({ dir = 'right', size = 18, color = '#10284E' }: { dir?: 'left' | 'right'; size?: number; color?: string }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ flexShrink: 0 }}>

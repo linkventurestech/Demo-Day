@@ -3,7 +3,7 @@ import { api, type Founder, type Startup } from '../lib/api';
 import { errorMessage } from '../lib/errors';
 import { toSquareDataUrl } from '../lib/image';
 import { buildLineup } from '../lib/lineup';
-import { Logo } from '../ui';
+import { ConfirmButton, Logo } from '../ui';
 import { PageHead, type PageProps } from './AdminApp';
 
 type Form = Omit<Startup, 'id'> & { id?: string };
@@ -50,8 +50,6 @@ export function Startups({ data, reload }: PageProps) {
 
   const remove = async () => {
     if (!form?.id) return;
-    const n = data.ratings.filter((r) => r.startup_id === form.id).length;
-    if (!confirm(`Remover ${form.name}?${n ? `\n\nAs ${n} avaliação(ões) dela também serão apagadas.` : ''}`)) return;
     try {
       await api.deleteStartup(form.id);
       await reload();
@@ -60,6 +58,9 @@ export function Startups({ data, reload }: PageProps) {
       setErr(errorMessage(e));
     }
   };
+
+  const nRatings = form?.id ? data.ratings.filter((r) => r.startup_id === form.id).length : 0;
+  const removeLabel = nRatings ? `Remover e apagar ${nRatings} avaliação(ões)?` : 'Confirmar remoção';
 
   const firstFree = () => {
     for (const b of blocks) for (const s of b.slots) if (!s.startup) return blank(b.category.id, s.position);
@@ -192,9 +193,9 @@ export function Startups({ data, reload }: PageProps) {
               {err && <div className="notice err">{err}</div>}
               <div className="row-actions" style={{ justifyContent: 'space-between' }}>
                 {form.id ? (
-                  <button className="btn danger" onClick={remove}>
+                  <ConfirmButton className="btn danger" confirmLabel={removeLabel} onConfirm={remove}>
                     Remover startup
-                  </button>
+                  </ConfirmButton>
                 ) : (
                   <span />
                 )}

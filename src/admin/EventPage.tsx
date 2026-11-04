@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api, type Category, type EventSettings } from '../lib/api';
 import { errorMessage } from '../lib/errors';
+import { ConfirmButton } from '../ui';
 import { PageHead, type PageProps } from './AdminApp';
 
 const slug = (s: string) =>
@@ -16,6 +17,7 @@ export function EventPage({ data, reload }: PageProps) {
   const [cats, setCats] = useState<Category[]>(data.categories);
   const [msg, setMsg] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null);
   const [busy, setBusy] = useState(false);
+  const [newCat, setNewCat] = useState('');
 
   // Mantém o formulário em dia com o polling enquanto não houver edição pendente.
   const dirty = JSON.stringify(settings) !== JSON.stringify(data.settings) || JSON.stringify(cats) !== JSON.stringify(data.categories);
@@ -57,8 +59,9 @@ export function EventPage({ data, reload }: PageProps) {
   };
 
   const addCat = () => {
-    const name = prompt('Nome do novo bloco');
-    if (!name?.trim()) return;
+    const name = newCat;
+    if (!name.trim()) return;
+    setNewCat('');
     let id = slug(name);
     while (cats.some((c) => c.id === id)) id += '-2';
     setCats([...cats, { id, name: name.trim(), position: Math.max(0, ...cats.map((c) => c.position)) + 1, slots: 3 }]);
@@ -67,7 +70,6 @@ export function EventPage({ data, reload }: PageProps) {
   const removeCat = async (c: Category) => {
     if (data.startups.some((s) => s.category_id === c.id)) return setMsg({ kind: 'err', text: `Mova ou remova as startups de “${c.name}” antes de apagar o bloco.` });
     if (!data.categories.some((x) => x.id === c.id)) return setCats(cats.filter((x) => x.id !== c.id));
-    if (!confirm(`Apagar o bloco “${c.name}”?`)) return;
     try {
       await api.deleteCategory(c.id);
       setCats(cats.filter((x) => x.id !== c.id));
@@ -117,9 +119,18 @@ export function EventPage({ data, reload }: PageProps) {
       <div className="card">
         <div className="card-head">
           <h3>Blocos</h3>
-          <button className="btn sm ghost" onClick={addCat}>
-            + Bloco
-          </button>
+          <form
+            className="actions"
+            onSubmit={(e) => {
+              e.preventDefault();
+              addCat();
+            }}
+          >
+            <input id="new-block" className="input" style={{ width: 220, height: 32 }} placeholder="Nome do novo bloco" value={newCat} onChange={(e) => setNewCat(e.target.value)} />
+            <button type="submit" className="btn sm ghost" disabled={!newCat.trim()}>
+              + Bloco
+            </button>
+          </form>
         </div>
         <table className="tbl">
           <thead>
@@ -150,9 +161,9 @@ export function EventPage({ data, reload }: PageProps) {
                   </td>
                   <td className="num">{data.startups.filter((s) => s.category_id === c.id).length}</td>
                   <td className="num">
-                    <button className="btn sm danger" onClick={() => removeCat(c)}>
+                    <ConfirmButton confirmLabel="Confirmar" onConfirm={() => removeCat(c)}>
                       Apagar
-                    </button>
+                    </ConfirmButton>
                   </td>
                 </tr>
               ))}
