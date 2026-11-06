@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { INTERESTS, type Startup } from '../lib/api';
 import { errorMessage } from '../lib/errors';
-import { initials, pitchIndex, type Block } from '../lib/lineup';
+import { initials, pad, pitchIndex, type Block } from '../lib/lineup';
 import { Check, Chevron, Logo } from '../ui';
 import type { Draft } from './PublicApp';
 
@@ -15,10 +15,12 @@ interface Props {
   votingOpen: boolean;
   onChange: (d: Draft) => void;
   onSubmit: () => Promise<void>;
+  backLabel: string;
   onBack: () => void;
+  onMap: () => void;
 }
 
-export function Detail({ startup: co, blocks, draft, sent, votingOpen, onChange, onSubmit, onBack }: Props) {
+export function Detail({ startup: co, blocks, draft, sent, votingOpen, onChange, onSubmit, backLabel, onBack, onMap }: Props) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const meta = pitchIndex(blocks)[co.id];
@@ -47,7 +49,7 @@ export function Detail({ startup: co, blocks, draft, sent, votingOpen, onChange,
       <div className="topbar">
         <button type="button" className="backbtn" onClick={onBack}>
           <Chevron dir="left" size={20} />
-          Ordem
+          {backLabel}
         </button>
         {meta && (
           <span className="mono">
@@ -64,6 +66,13 @@ export function Detail({ startup: co, blocks, draft, sent, votingOpen, onChange,
             {co.tagline && <p>{co.tagline}</p>}
           </div>
         </div>
+
+        {co.stand != null && (
+          <button type="button" className="stand-link" onClick={onMap}>
+            <b>Stand {pad(co.stand)}</b> · Ver no mapa
+            <Chevron size={16} />
+          </button>
+        )}
 
         {co.summary && <p className="summary">{co.summary}</p>}
 

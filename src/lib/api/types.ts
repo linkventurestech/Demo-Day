@@ -37,6 +37,8 @@ export interface Startup {
   summary: string;
   logo_url: string | null;
   founders: Founder[];
+  /** Stand no mapa do Showcase (1–12), ou null. */
+  stand: number | null;
 }
 
 export interface Juror {
@@ -97,7 +99,7 @@ export interface AdminData extends PublicData {
 }
 
 /** Erros de domínio que a UI traduz em mensagens. */
-export type ApiErrorCode = 'not_registered' | 'invalid_session' | 'voting_closed' | 'not_admin' | 'slot_taken' | 'unknown';
+export type ApiErrorCode = 'not_registered' | 'invalid_session' | 'voting_closed' | 'not_admin' | 'slot_taken' | 'stand_taken' | 'unknown';
 
 export class ApiError extends Error {
   constructor(public code: ApiErrorCode, message?: string) {

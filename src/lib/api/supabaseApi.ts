@@ -14,14 +14,14 @@ const T = {
 } as const;
 
 // No banco o bloco da startup é `block_id`; no app, `category_id`.
-const STARTUP_COLS = 'id, category_id:block_id, position, name, tagline, summary, logo_url, founders';
+const STARTUP_COLS = 'id, category_id:block_id, position, name, tagline, summary, logo_url, founders, stand';
 const toRow = ({ category_id, ...s }: Partial<Startup>) => ({ ...s, ...(category_id ? { block_id: category_id } : {}) });
 
 function fail(error: PostgrestError | Error | null): never {
   const msg = error?.message ?? 'unknown';
   const code = KNOWN.find((k) => msg.includes(k));
   if (code) throw new ApiError(code, msg);
-  if ('code' in (error ?? {}) && (error as PostgrestError).code === '23505') throw new ApiError('slot_taken', msg);
+  if ('code' in (error ?? {}) && (error as PostgrestError).code === '23505') throw new ApiError(msg.includes('stand') ? 'stand_taken' : 'slot_taken', msg);
   throw new ApiError('unknown', msg);
 }
 

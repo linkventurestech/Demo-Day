@@ -2,7 +2,7 @@
 
 App do Demo Day em duas partes:
 
-- **App do público** (`/`, celular): a pessoa entra só com o e-mail cadastrado, vê a ordem dos pitchs, dá nota de 1 a 5 e sinaliza interesse (investir, fazer negócio, ser parceiro, ser mentor, ficar informado). Mesma estética do protótipo.
+- **App do público** (`/`, celular): a pessoa entra só com o e-mail cadastrado, vê a ordem dos pitchs, dá nota de 1 a 5 e sinaliza interesse (investir, fazer negócio, ser parceiro, ser mentor, ficar informado). Mesma estética do protótipo. Inclui o **mapa dos stands**: planta em U com os 12 stands do Showcase; tocar num stand abre a startup.
 - **Admin** (`/admin`, desktop): sobe a lista de e-mails liberados, acompanha os resultados ao vivo por startup, vê os pedidos de conexão (quem, qual startup, qual interesse), edita startups, blocos, jurados e abre/encerra a votação. Tudo exporta em CSV (abre direto no Excel).
 
 Cada resposta fica no banco ligada a quem respondeu (`ratings`: e-mail × startup × nota × interesses). Se a pessoa reenvia, a resposta é atualizada, não duplicada.
@@ -26,7 +26,7 @@ Usa o **mesmo projeto Supabase do portfolio** (`link_portfolio`). Tudo do Demo D
 | --- | --- | --- |
 | `demoday_app_settings` | nome do evento, texto de entrada, votação aberta | todos |
 | `demoday_app_blocks` | blocos da ordem (Inspiration, Startup School…) e nº de posições | todos |
-| `demoday_app_startups` | startups, posição no bloco, logo, founders | todos |
+| `demoday_app_startups` | startups, posição no bloco, logo, founders, stand no mapa | todos |
 | `demoday_app_jurors` | jurados | todos |
 | `demoday_app_attendees` | e-mails liberados (nome, empresa, último acesso) | equipe |
 | `demoday_app_ratings` | nota e interesses por pessoa × startup | equipe |

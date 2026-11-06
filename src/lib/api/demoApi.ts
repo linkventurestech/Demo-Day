@@ -1,11 +1,12 @@
-import { SEED_ATTENDEES, SEED_CATEGORIES, SEED_JURORS, SEED_SETTINGS, SEED_STARTUPS } from './seed';
+import { SEED_ATTENDEES, SEED_CATEGORIES, SEED_EXAMPLE_PEOPLE, SEED_EXAMPLE_RATINGS, SEED_JURORS, SEED_SETTINGS, SEED_STARTUPS } from './seed';
 import { ApiError, type AdminData, type Api, type Attendee, type Rating } from './types';
 
 /**
  * Backend local (localStorage) com as mesmas regras do banco, para testar o
  * app sem Supabase configurado. Os dados ficam só neste navegador.
  */
-const KEY = 'dd-demo-db';
+// v3: respostas de exemplo (v2 trouxe os blocos Investment Round e Showcase).
+const KEY = 'dd-demo-db-v3';
 
 interface Db extends AdminData {
   sessions: Record<string, string>; // token → attendee_id
@@ -17,13 +18,27 @@ const now = () => new Date().toISOString();
 
 function fresh(): Db {
   const created = now();
+  const ago = (min: number) => new Date(Date.now() - min * 60_000).toISOString();
+  const examples: Attendee[] = SEED_EXAMPLE_PEOPLE.map((p, i) => ({ id: uid(), ...p, created_at: created, last_login_at: ago(45 - i * 3) }));
+  const byEmail = new Map(examples.map((a) => [a.email, a.id]));
+  const ratings: Rating[] = SEED_EXAMPLE_RATINGS.filter(([, sid]) => SEED_STARTUPS.some((s) => s.id === sid)).map(([email, startup_id, score, interests, min]) => ({
+    attendee_id: byEmail.get(email)!,
+    startup_id,
+    score,
+    interests: [...interests].sort(),
+    created_at: ago(min),
+    updated_at: ago(min),
+  }));
   return {
     settings: { ...SEED_SETTINGS },
     categories: SEED_CATEGORIES.map((c) => ({ ...c })),
     startups: SEED_STARTUPS.map((s) => ({ ...s, founders: [...s.founders] })),
     jurors: [...SEED_JURORS],
-    attendees: SEED_ATTENDEES.map((email) => ({ id: uid(), email, name: null, company: null, created_at: created, last_login_at: null })),
-    ratings: [],
+    attendees: [
+      ...SEED_ATTENDEES.map((email) => ({ id: uid(), email, name: null, company: null, created_at: created, last_login_at: null })),
+      ...examples,
+    ],
+    ratings,
     sessions: {},
     admin: null,
   };
@@ -32,7 +47,15 @@ function fresh(): Db {
 function load(): Db {
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) return JSON.parse(raw) as Db;
+    if (raw) {
+      // Quem já abriu uma versão anterior da prévia também recebe os e-mails liberados depois.
+      const d = JSON.parse(raw) as Db;
+      for (const s of d.startups) s.stand ??= null;
+      for (const email of SEED_ATTENDEES)
+        if (!d.attendees.some((a) => a.email === email))
+          d.attendees.push({ id: uid(), email, name: null, company: null, created_at: now(), last_login_at: null });
+      return d;
+    }
   } catch {
     /* storage indisponível: segue em memória */
   }
@@ -138,6 +161,7 @@ export function createDemoApi(): Api {
     async saveStartup(s) {
       const d = db();
       if (d.startups.some((x) => x.id !== s.id && x.category_id === s.category_id && x.position === s.position)) throw new ApiError('slot_taken');
+      if (s.stand != null && d.startups.some((x) => x.id !== s.id && x.stand === s.stand)) throw new ApiError('stand_taken');
       if (s.id) Object.assign(d.startups.find((x) => x.id === s.id)!, s);
       else d.startups.push({ ...s, id: uid() });
       save();

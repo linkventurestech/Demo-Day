@@ -241,3 +241,32 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
 .adm-login .alert { margin: 0; font-size: 13px; color: var(--red-soft); }
 .adm-login .hint { margin: 4px 0 0; font-size: 13px; color: var(--mist); line-height: 1.4; }
 .btn-gold.outline { background: transparent; color: var(--white); border-color: rgba(255, 255, 255, 0.5); }
+
+/* ─────────── Mapa dos stands ─────────── */
+.pill-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.pill-row .pill-outline { margin-top: 0; }
+.stands { flex: 1; min-height: 0; overflow-y: auto; padding: 12px 20px 32px; }
+.stands .lead { margin: 10px 0 16px; font-size: 15px; line-height: 1.5; color: var(--slate); }
+.plan { display: block; width: 100%; height: auto; max-width: 420px; margin: 0 auto; font-family: var(--font); }
+.plan-hall { fill: var(--paper); stroke: var(--line-2); stroke-width: 1; }
+.plan-door { stroke: var(--white); stroke-width: 4; }
+.plan-floor { fill: var(--white); stroke: var(--line); stroke-dasharray: 3 4; }
+.plan-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; fill: var(--slate); }
+.stand rect { fill: var(--white); stroke: var(--line-2); stroke-width: 1; stroke-dasharray: 4 3; }
+.stand .stand-n { font-family: var(--mono); font-size: 10px; font-weight: 700; fill: var(--slate); }
+.stand .stand-name { font-size: 12px; font-weight: 600; fill: var(--mist); }
+.stand.taken rect { fill: var(--navy); stroke: var(--navy); stroke-dasharray: none; }
+.stand.taken .stand-n { fill: var(--mist); }
+.stand.taken .stand-name { fill: var(--white); font-size: 13px; font-weight: 700; }
+.stand.focus rect { fill: var(--gold); stroke: var(--gold); }
+.stand.focus .stand-n, .stand.focus .stand-name { fill: var(--navy); }
+.stand.clickable { cursor: pointer; }
+.stand.clickable:focus { outline: none; }
+.stand.clickable:focus-visible rect { stroke: var(--gold); stroke-width: 3; }
+.stand-list { list-style: none; margin: 20px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.stand-tag { width: 30px; flex-shrink: 0; font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--slate); text-align: center; }
+.slot-card.focus { border-color: var(--gold); box-shadow: 0 0 0 2px var(--gold); }
+.stand-link { align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px 0 10px; border-radius: 9999px; border: 1px solid var(--line-2); background: var(--white); color: var(--navy); font-size: 14px; font-weight: 600; cursor: pointer; }
+.stand-link b { font-family: var(--mono); font-size: 12px; }
+.admin-plan { display: flex; justify-content: center; }
+.admin-plan .plan { max-width: 360px; }
