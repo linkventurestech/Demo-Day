@@ -2,7 +2,9 @@ import { useMemo, useState } from 'react';
 import { api, type Founder, type Startup } from '../lib/api';
 import { errorMessage } from '../lib/errors';
 import { toSquareDataUrl } from '../lib/image';
-import { buildLineup } from '../lib/lineup';
+import { buildLineup, pad } from '../lib/lineup';
+import { STAND_COUNT, standOccupants } from '../lib/stands';
+import { StandMap } from '../public/StandMap';
 import { ConfirmButton, Logo } from '../ui';
 import { PageHead, type PageProps } from './AdminApp';
 
@@ -16,10 +18,12 @@ const blank = (category_id: string, position: number): Form => ({
   summary: '',
   logo_url: null,
   founders: [],
+  stand: null,
 });
 
 export function Startups({ data, reload }: PageProps) {
   const blocks = useMemo(() => buildLineup(data.categories, data.startups), [data]);
+  const occupants = useMemo(() => standOccupants(data.startups), [data.startups]);
   const [form, setForm] = useState<Form | null>(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
@@ -78,6 +82,17 @@ export function Startups({ data, reload }: PageProps) {
 
       <div className={form ? 'split' : ''}>
         <div>
+          <div className="card">
+            <div className="card-head">
+              <h3>Mapa dos stands</h3>
+              <span className="muted small">
+                {occupants.size} de {STAND_COUNT} ocupados · defina o stand no formulário da startup
+              </span>
+            </div>
+            <div className="card-pad admin-plan">
+              <StandMap startups={data.startups} focus={form?.stand ?? null} onPick={(s) => open(s)} />
+            </div>
+          </div>
           {blocks.length === 0 && <div className="card empty">Crie um bloco em Evento antes de cadastrar startups.</div>}
           {blocks.map((b) => (
             <div key={b.category.id} className="card">
@@ -167,6 +182,22 @@ export function Startups({ data, reload }: PageProps) {
                   <input className="input" type="number" min={1} value={form.position} onChange={(e) => set('position', Math.max(1, Number(e.target.value) || 1))} />
                 </label>
               </div>
+              <label className="field">
+                <span>Stand no mapa</span>
+                <select className="select" value={form.stand ?? ''} onChange={(e) => set('stand', e.target.value ? Number(e.target.value) : null)}>
+                  <option value="">Sem stand</option>
+                  {Array.from({ length: STAND_COUNT }, (_, i) => i + 1).map((n) => {
+                    const other = occupants.get(n);
+                    const busyBy = other && other.id !== form.id ? other.name : null;
+                    return (
+                      <option key={n} value={n} disabled={!!busyBy}>
+                        Stand {pad(n)}
+                        {busyBy ? ` · ${busyBy}` : ''}
+                      </option>
+                    );
+                  })}
+                </select>
+              </label>
               <label className="field">
                 <span>Linha de apoio</span>
                 <input className="input" placeholder="Setor · Estágio" value={form.tagline} onChange={(e) => set('tagline', e.target.value)} />

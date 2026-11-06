@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { parseAttendees, toCsv } from './csv';
 import { buildLineup, pitchIndex } from './lineup';
 import { aggregate, connectionRows } from './results';
+import { PLAN, standLayout, standOccupants } from './stands';
 import { SEED_CATEGORIES, SEED_STARTUPS } from './api/seed';
 import type { Rating } from './api/types';
 
@@ -66,4 +67,40 @@ describe('aggregate', () => {
 
 it('toCsv escapa separador e aspas', () => {
   expect(toCsv(['a', 'b'], [['x;y', 'diz "oi"']])).toBe('﻿a;b\r\n"x;y";"diz ""oi"""');
+});
+
+describe('standLayout', () => {
+  const boxes = standLayout();
+
+  it('distribui 12 stands em U: 4 em cada braço e 4 no fundo', () => {
+    expect(boxes).toHaveLength(12);
+    expect(boxes.map((b) => b.side)).toEqual([...Array(4).fill('left'), ...Array(4).fill('base'), ...Array(4).fill('right')]);
+  });
+
+  it('numera no sentido de quem anda: desce à esquerda, cruza o fundo, sobe à direita', () => {
+    const left = boxes.filter((b) => b.side === 'left').map((b) => b.y);
+    const base = boxes.filter((b) => b.side === 'base').map((b) => b.x);
+    const right = boxes.filter((b) => b.side === 'right').map((b) => b.y);
+    expect(left).toEqual([...left].sort((a, b) => a - b));
+    expect(base).toEqual([...base].sort((a, b) => a - b));
+    expect(right).toEqual([...right].sort((a, b) => b - a));
+  });
+
+  it('cabe na planta e nenhum stand encosta em outro', () => {
+    for (const b of boxes) {
+      expect(b.x).toBeGreaterThanOrEqual(0);
+      expect(b.y).toBeGreaterThanOrEqual(0);
+      expect(b.x + b.w).toBeLessThanOrEqual(PLAN.width);
+      expect(b.y + b.h).toBeLessThanOrEqual(PLAN.height);
+    }
+    for (const a of boxes)
+      for (const b of boxes)
+        if (a !== b) expect(a.x + a.w <= b.x || b.x + b.w <= a.x || a.y + a.h <= b.y || b.y + b.h <= a.y).toBe(true);
+  });
+
+  it('mapeia cada stand ocupado para a sua startup', () => {
+    const m = standOccupants(SEED_STARTUPS);
+    expect(m.get(1)?.name).toBe('Tubushi');
+    expect(m.size).toBe(1);
+  });
 });

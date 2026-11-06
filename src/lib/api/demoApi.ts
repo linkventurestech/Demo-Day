@@ -36,6 +36,7 @@ function load(): Db {
     if (raw) {
       // Quem já abriu uma versão anterior da prévia também recebe os e-mails liberados depois.
       const d = JSON.parse(raw) as Db;
+      for (const s of d.startups) s.stand ??= null;
       for (const email of SEED_ATTENDEES)
         if (!d.attendees.some((a) => a.email === email))
           d.attendees.push({ id: uid(), email, name: null, company: null, created_at: now(), last_login_at: null });
@@ -146,6 +147,7 @@ export function createDemoApi(): Api {
     async saveStartup(s) {
       const d = db();
       if (d.startups.some((x) => x.id !== s.id && x.category_id === s.category_id && x.position === s.position)) throw new ApiError('slot_taken');
+      if (s.stand != null && d.startups.some((x) => x.id !== s.id && x.stand === s.stand)) throw new ApiError('stand_taken');
       if (s.id) Object.assign(d.startups.find((x) => x.id === s.id)!, s);
       else d.startups.push({ ...s, id: uid() });
       save();

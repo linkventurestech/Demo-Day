@@ -14,7 +14,7 @@ export const SEED_CATEGORIES: Category[] = [
 
 export const SEED_STARTUPS: Startup[] = [
   {
-    id: 'dressy', category_id: 'ss', position: 1, name: 'Dressy', logo_url: null,
+    id: 'dressy', category_id: 'ss', position: 1, name: 'Dressy', logo_url: null, stand: null,
     tagline: 'SaaS · Monetização inicial',
     summary: 'Donas de marcas de moda feminina autoral, médio-premium, com ticket médio a partir de R$ 200, têm dificuldade em converter clientes que chegam até o catálogo mas travam na dúvida de caimento e tamanho antes do checkout.',
     founders: [
@@ -23,7 +23,7 @@ export const SEED_STARTUPS: Startup[] = [
     ],
   },
   {
-    id: 'centra', category_id: 'ss', position: 2, name: 'Centra', logo_url: null,
+    id: 'centra', category_id: 'ss', position: 2, name: 'Centra', logo_url: null, stand: null,
     tagline: 'Tecnologia · Validação',
     summary: 'Melhoramos e mapeamos o nível de gestão emocional dos alunos.',
     founders: [
@@ -33,7 +33,7 @@ export const SEED_STARTUPS: Startup[] = [
     ],
   },
   {
-    id: 'tubushi', category_id: 'show', position: 1, name: 'Tubushi', logo_url: null,
+    id: 'tubushi', category_id: 'show', position: 1, name: 'Tubushi', logo_url: null, stand: 1,
     tagline: 'Varejo · Escala',
     summary: 'A Tubushi criou o primeiro sushi no tubo de São Paulo, com a proposta de trazer um sushi fresco e de qualidade para momentos que não se permitem comer um sushi de forma tradicional.',
     founders: [{ name: 'Lucas Requena', role: 'Founder' }],
