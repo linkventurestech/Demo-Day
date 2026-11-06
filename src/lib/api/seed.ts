@@ -1,6 +1,6 @@
 import type { Category, EventSettings, Juror, Startup } from './types';
 
-/** Conteúdo do protótipo, usado no modo demonstração (espelha supabase/seed.sql). */
+/** Conteúdo inicial do modo demonstração (espelha supabase/seed.sql e o banco em 2026-11). */
 export const SEED_SETTINGS: EventSettings = {
   name: 'Demo Day 2026.2',
   tagline: 'Acompanhe a ordem dos pitchs, avalie as startups e sinalize seu interesse.',
@@ -8,23 +8,11 @@ export const SEED_SETTINGS: EventSettings = {
 };
 
 export const SEED_CATEGORIES: Category[] = [
-  { id: 'insp', name: 'Inspiration', position: 1, slots: 3 },
-  { id: 'ss', name: 'Startup School', position: 2, slots: 5 },
-  { id: 'open', name: 'Open Round', position: 3, slots: 3 },
-  { id: 'show', name: 'Showcase', position: 4, slots: 10 },
+  { id: 'ss', name: 'Investment Round', position: 1, slots: 8 },
+  { id: 'show', name: 'Showcase', position: 2, slots: 10 },
 ];
 
 export const SEED_STARTUPS: Startup[] = [
-  {
-    id: 'gaio', category_id: 'insp', position: 1, name: 'Gaio', logo_url: null,
-    tagline: 'Marketing e Publicidade · Tração',
-    summary: 'Transforma seguidores em clientes no Instagram: ranqueia os seguidores mais engajados, organiza as conversas numa inbox inteligente e automatiza vendas pelo direct. Seed de R$ 5,5M liderada pelo G4.',
-    founders: [
-      { name: 'Bernardo Rodela', role: 'CEO' },
-      { name: 'Tiago Salles', role: 'COO' },
-      { name: 'Marcos Varotti', role: 'CMO' },
-    ],
-  },
   {
     id: 'dressy', category_id: 'ss', position: 1, name: 'Dressy', logo_url: null,
     tagline: 'SaaS · Monetização inicial',
@@ -35,7 +23,7 @@ export const SEED_STARTUPS: Startup[] = [
     ],
   },
   {
-    id: 'centra', category_id: 'open', position: 1, name: 'Centra', logo_url: null,
+    id: 'centra', category_id: 'ss', position: 2, name: 'Centra', logo_url: null,
     tagline: 'Tecnologia · Validação',
     summary: 'Melhoramos e mapeamos o nível de gestão emocional dos alunos.',
     founders: [

@@ -30,9 +30,10 @@ describe('parseAttendees', () => {
 describe('buildLineup', () => {
   it('numera os pitchs em sequência entre blocos', () => {
     const blocks = buildLineup(SEED_CATEGORIES, SEED_STARTUPS);
-    expect(blocks.map((b) => b.info)).toEqual(['Pitchs 01–03', 'Pitchs 04–08', 'Pitchs 09–11', 'Pitchs 12–21']);
-    expect(pitchIndex(blocks)).toMatchObject({ gaio: { num: '01' }, dressy: { num: '04' }, centra: { num: '09' }, tubushi: { num: '12' } });
-    expect(blocks[0].slots[1].startup).toBeNull();
+    expect(blocks.map((b) => b.category.name)).toEqual(['Investment Round', 'Showcase']);
+    expect(blocks.map((b) => b.info)).toEqual(['Pitchs 01–08', 'Pitchs 09–18']);
+    expect(pitchIndex(blocks)).toMatchObject({ dressy: { num: '01' }, centra: { num: '02' }, tubushi: { num: '09' } });
+    expect(blocks[0].slots[2].startup).toBeNull();
   });
 
   it('alonga o bloco quando uma startup passa do número de posições', () => {
@@ -45,10 +46,10 @@ describe('aggregate', () => {
   const r = (attendee_id: string, startup_id: string, score: number | null, interests: Rating['interests'] = []): Rating => ({
     attendee_id, startup_id, score, interests, created_at: '2026-10-30T10:00:00Z', updated_at: '2026-10-30T10:0' + attendee_id.length + ':00Z',
   });
-  const ratings = [r('a', 'gaio', 5, ['invest']), r('bb', 'gaio', 4), r('ccc', 'gaio', null, ['news', 'invest'])];
+  const ratings = [r('a', 'dressy', 5, ['invest']), r('bb', 'dressy', 4), r('ccc', 'dressy', null, ['news', 'invest'])];
 
   it('calcula média só com quem deu nota e conta interesses', () => {
-    const g = aggregate(SEED_STARTUPS, ratings).find((x) => x.startup.id === 'gaio')!;
+    const g = aggregate(SEED_STARTUPS, ratings).find((x) => x.startup.id === 'dressy')!;
     expect(g.avg).toBe(4.5);
     expect(g.votes).toBe(2);
     expect(g.responses).toBe(3);
