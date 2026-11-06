@@ -54,4 +54,10 @@ export const SEED_STARTUPS: Startup[] = [
 
 export const SEED_JURORS: Juror[] = [];
 
-export const SEED_ATTENDEES = ['demo@lsb.edu.br', 'convidado@demoday.com'];
+// VITE_DEMO_ATTENDEES (e-mails separados por vírgula) libera mais gente numa prévia, sem pôr e-mails no código.
+const extra = ((import.meta.env.VITE_DEMO_ATTENDEES as string | undefined) ?? '')
+  .split(',')
+  .map((e) => e.trim().toLowerCase())
+  .filter(Boolean);
+
+export const SEED_ATTENDEES = [...new Set(['demo@lsb.edu.br', 'convidado@demoday.com', ...extra])];

@@ -32,7 +32,14 @@ function fresh(): Db {
 function load(): Db {
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) return JSON.parse(raw) as Db;
+    if (raw) {
+      // Quem já abriu uma versão anterior da prévia também recebe os e-mails liberados depois.
+      const d = JSON.parse(raw) as Db;
+      for (const email of SEED_ATTENDEES)
+        if (!d.attendees.some((a) => a.email === email))
+          d.attendees.push({ id: uid(), email, name: null, company: null, created_at: now(), last_login_at: null });
+      return d;
+    }
   } catch {
     /* storage indisponível: segue em memória */
   }
