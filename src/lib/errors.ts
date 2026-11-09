@@ -11,6 +11,8 @@ export function errorMessage(e: unknown): string {
         return 'A votação está encerrada.';
       case 'not_admin':
         return 'Esta conta não tem acesso. O painel é liberado para quem é admin ou link_staff no portfolio da Link.';
+      case 'stand_taken':
+        return 'Esse stand já está com outra startup. Libere-o lá antes ou escolha outro.';
       case 'slot_taken':
         return 'Essa posição já está ocupada por outra startup.';
       default:

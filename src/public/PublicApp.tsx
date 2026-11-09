@@ -7,13 +7,18 @@ import { Login } from './Login';
 import { Home } from './Home';
 import { Detail } from './Detail';
 import { Jury } from './Jury';
+import { Stands } from './Stands';
 
 export interface Draft {
   score: number;
   flags: InterestId[];
 }
 
-type Screen = { name: 'home' } | { name: 'detail'; id: string } | { name: 'jury' };
+type Screen =
+  | { name: 'home' }
+  | { name: 'detail'; id: string; from?: 'map' }
+  | { name: 'jury' }
+  | { name: 'map'; focus: number | null };
 
 export function PublicApp() {
   const [data, setData] = useState<PublicData | null>(null);
@@ -124,6 +129,17 @@ export function PublicApp() {
           votingOpen={data.settings.voting_open}
           onChange={(d) => updateDraft(startup.id, d)}
           onSubmit={() => submit(startup.id)}
+          backLabel={screen.from === 'map' ? 'Mapa' : 'Ordem'}
+          onBack={() => (screen.from === 'map' ? setScreen({ name: 'map', focus: startup.stand }) : goHome())}
+          onMap={() => setScreen({ name: 'map', focus: startup.stand })}
+        />
+      ) : screen.name === 'map' ? (
+        <Stands
+          settings={data.settings}
+          startups={data.startups}
+          focus={screen.focus}
+          sent={sent}
+          onOpen={(id) => setScreen({ name: 'detail', id, from: 'map' })}
           onBack={goHome}
         />
       ) : screen.name === 'jury' ? (
@@ -140,6 +156,7 @@ export function PublicApp() {
           onScrollPos={(y) => (scrollPos.current = y)}
           onOpen={(id) => setScreen({ name: 'detail', id })}
           onJury={() => setScreen({ name: 'jury' })}
+          onMap={() => setScreen({ name: 'map', focus: null })}
           onLogout={() => logout()}
         />
       )}

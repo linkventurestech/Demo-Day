@@ -15,10 +15,11 @@ interface Props {
   onScrollPos: (y: number) => void;
   onOpen: (id: string) => void;
   onJury: () => void;
+  onMap: () => void;
   onLogout: () => void;
 }
 
-export function Home({ settings, blocks, hasJury, drafts, sent, email, initialScroll, onScrollPos, onOpen, onJury, onLogout }: Props) {
+export function Home({ settings, blocks, hasJury, drafts, sent, email, initialScroll, onScrollPos, onOpen, onJury, onMap, onLogout }: Props) {
   const scroller = useRef<HTMLDivElement>(null);
   const nav = useRef<HTMLElement>(null);
   const [active, setActive] = useState(blocks[0]?.category.id ?? '');
@@ -59,12 +60,18 @@ export function Home({ settings, blocks, hasJury, drafts, sent, email, initialSc
           </button>
         </div>
         <h1 className="title">{settings.name}</h1>
-        {hasJury && (
-          <button type="button" className="pill-outline" onClick={onJury}>
-            Conheça os jurados
+        <div className="pill-row">
+          <button type="button" className="pill-outline" onClick={onMap}>
+            Mapa dos stands
             <Chevron />
           </button>
-        )}
+          {hasJury && (
+            <button type="button" className="pill-outline" onClick={onJury}>
+              Conheça os jurados
+              <Chevron />
+            </button>
+          )}
+        </div>
       </header>
 
       {blocks.length > 0 && (

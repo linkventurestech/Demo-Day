@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { parseAttendees, toCsv } from './csv';
 import { buildLineup, pitchIndex } from './lineup';
 import { aggregate, connectionRows } from './results';
+import { PLAN, standLayout, standOccupants } from './stands';
 import { SEED_CATEGORIES, SEED_STARTUPS } from './api/seed';
 import type { Rating } from './api/types';
 
@@ -30,9 +31,10 @@ describe('parseAttendees', () => {
 describe('buildLineup', () => {
   it('numera os pitchs em sequência entre blocos', () => {
     const blocks = buildLineup(SEED_CATEGORIES, SEED_STARTUPS);
-    expect(blocks.map((b) => b.info)).toEqual(['Pitchs 01–03', 'Pitchs 04–08', 'Pitchs 09–11', 'Pitchs 12–21']);
-    expect(pitchIndex(blocks)).toMatchObject({ gaio: { num: '01' }, dressy: { num: '04' }, centra: { num: '09' }, tubushi: { num: '12' } });
-    expect(blocks[0].slots[1].startup).toBeNull();
+    expect(blocks.map((b) => b.category.name)).toEqual(['Investment Round', 'Showcase']);
+    expect(blocks.map((b) => b.info)).toEqual(['Pitchs 01–08', 'Pitchs 09–18']);
+    expect(pitchIndex(blocks)).toMatchObject({ dressy: { num: '01' }, centra: { num: '02' }, tubushi: { num: '09' } });
+    expect(blocks[0].slots[2].startup).toBeNull();
   });
 
   it('alonga o bloco quando uma startup passa do número de posições', () => {
@@ -45,10 +47,10 @@ describe('aggregate', () => {
   const r = (attendee_id: string, startup_id: string, score: number | null, interests: Rating['interests'] = []): Rating => ({
     attendee_id, startup_id, score, interests, created_at: '2026-10-30T10:00:00Z', updated_at: '2026-10-30T10:0' + attendee_id.length + ':00Z',
   });
-  const ratings = [r('a', 'gaio', 5, ['invest']), r('bb', 'gaio', 4), r('ccc', 'gaio', null, ['news', 'invest'])];
+  const ratings = [r('a', 'dressy', 5, ['invest']), r('bb', 'dressy', 4), r('ccc', 'dressy', null, ['news', 'invest'])];
 
   it('calcula média só com quem deu nota e conta interesses', () => {
-    const g = aggregate(SEED_STARTUPS, ratings).find((x) => x.startup.id === 'gaio')!;
+    const g = aggregate(SEED_STARTUPS, ratings).find((x) => x.startup.id === 'dressy')!;
     expect(g.avg).toBe(4.5);
     expect(g.votes).toBe(2);
     expect(g.responses).toBe(3);
@@ -65,4 +67,40 @@ describe('aggregate', () => {
 
 it('toCsv escapa separador e aspas', () => {
   expect(toCsv(['a', 'b'], [['x;y', 'diz "oi"']])).toBe('﻿a;b\r\n"x;y";"diz ""oi"""');
+});
+
+describe('standLayout', () => {
+  const boxes = standLayout();
+
+  it('distribui 12 stands em U: 4 em cada braço e 4 no fundo', () => {
+    expect(boxes).toHaveLength(12);
+    expect(boxes.map((b) => b.side)).toEqual([...Array(4).fill('left'), ...Array(4).fill('base'), ...Array(4).fill('right')]);
+  });
+
+  it('numera no sentido de quem anda: desce à esquerda, cruza o fundo, sobe à direita', () => {
+    const left = boxes.filter((b) => b.side === 'left').map((b) => b.y);
+    const base = boxes.filter((b) => b.side === 'base').map((b) => b.x);
+    const right = boxes.filter((b) => b.side === 'right').map((b) => b.y);
+    expect(left).toEqual([...left].sort((a, b) => a - b));
+    expect(base).toEqual([...base].sort((a, b) => a - b));
+    expect(right).toEqual([...right].sort((a, b) => b - a));
+  });
+
+  it('cabe na planta e nenhum stand encosta em outro', () => {
+    for (const b of boxes) {
+      expect(b.x).toBeGreaterThanOrEqual(0);
+      expect(b.y).toBeGreaterThanOrEqual(0);
+      expect(b.x + b.w).toBeLessThanOrEqual(PLAN.width);
+      expect(b.y + b.h).toBeLessThanOrEqual(PLAN.height);
+    }
+    for (const a of boxes)
+      for (const b of boxes)
+        if (a !== b) expect(a.x + a.w <= b.x || b.x + b.w <= a.x || a.y + a.h <= b.y || b.y + b.h <= a.y).toBe(true);
+  });
+
+  it('mapeia cada stand ocupado para a sua startup', () => {
+    const m = standOccupants(SEED_STARTUPS);
+    expect(m.get(1)?.name).toBe('Tubushi');
+    expect(m.size).toBe(1);
+  });
 });
