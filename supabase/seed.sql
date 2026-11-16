@@ -1,19 +1,23 @@
--- Conteúdo inicial do Demo Day 2026.2 (blocos Investment Round e Showcase). Rode depois da migration.
--- Troque pelo admin à vontade; os logos sobem pela tela de Startups.
+-- Conteúdo inicial do Demo Day 2026.2. Rode depois das migrations.
+-- As startups são ligadas às empresas do portfolio; a sincronização traz logo,
+-- descrição, setor · estágio e founders (com foto) do sistema.
 
 insert into public.demoday_app_blocks (id, name, position, slots) values
-  ('ss', 'Investment Round', 1, 8),
-  ('show', 'Showcase', 2, 10)
+  ('ss', 'Investment Round', 1, 5),
+  ('show', 'Showcase', 2, 5)
 on conflict (id) do nothing;
 
-insert into public.demoday_app_startups (block_id, position, name, tagline, summary, founders) values
-  ('ss', 1, 'Dressy', 'SaaS · Monetização inicial',
-   'Donas de marcas de moda feminina autoral, médio-premium, com ticket médio a partir de R$ 200, têm dificuldade em converter clientes que chegam até o catálogo mas travam na dúvida de caimento e tamanho antes do checkout.',
-   '[{"name":"Izabela Varotti","role":"Co-founder"},{"name":"Gabriela Vital","role":"Founder"}]'),
-  ('ss', 2, 'Centra', 'Tecnologia · Validação',
-   'Melhoramos e mapeamos o nível de gestão emocional dos alunos.',
-   '[{"name":"Felipe Gambarini","role":"Co-founder"},{"name":"Pedro Costa","role":"Co-founder"},{"name":"Pedro Negri","role":"CTO"}]'),
-  ('show', 1, 'Tubushi', 'Varejo · Escala',
-   'A Tubushi criou o primeiro sushi no tubo de São Paulo, com a proposta de trazer um sushi fresco e de qualidade para momentos que não se permitem comer um sushi de forma tradicional.',
-   '[{"name":"Lucas Requena","role":"Founder"}]')
+insert into public.demoday_app_startups (block_id, position, name, portfolio_company_id) values
+  ('ss',   1, 'Dressy',      'db088e2e-57d2-4b55-af97-d42203bd6633'),
+  ('ss',   2, 'Eco Ice',     '216253af-2d37-45b9-8ecd-da451098b619'),
+  ('ss',   3, 'Trena',       '784d3a25-22e2-4ac5-9001-ee07d0aa765c'),
+  ('ss',   4, 'Sincra',      'd544eb5e-c2b6-4aed-99a1-6ab804be3dce'),
+  ('ss',   5, 'Centra',      '79d43e7e-7541-4ab2-9a86-608f84afd2c0'),
+  ('show', 1, 'NaoeumMapa',  '05cf6e6e-806d-4597-b04b-df33d73a3ff5'),
+  ('show', 2, 'Drafted',     '4657404e-494b-45b0-b1eb-d9b946e668e5'),
+  ('show', 3, 'Odan Studio', '7ce480c2-f013-4d92-afab-ebd7f6a868a6'),
+  ('show', 4, 'Persint',     '26e00e5b-2cd0-440e-ac34-22e7493d9d9f'),
+  ('show', 5, 'Tubushi',     'c663bbd1-0fae-40c5-831b-16d0bf41cc6a')
 on conflict (block_id, position) do nothing;
+
+select public._demoday_app_sync(null);

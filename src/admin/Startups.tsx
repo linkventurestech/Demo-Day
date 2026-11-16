@@ -1,8 +1,8 @@
-import { useMemo, useState } from 'react';
-import { api, type Founder, type Startup } from '../lib/api';
+import { useEffect, useMemo, useState } from 'react';
+import { api, type Founder, type PortfolioCompany, type Startup } from '../lib/api';
 import { errorMessage } from '../lib/errors';
 import { toSquareDataUrl } from '../lib/image';
-import { buildLineup, pad } from '../lib/lineup';
+import { buildLineup, initials, pad } from '../lib/lineup';
 import { STAND_COUNT, standOccupants } from '../lib/stands';
 import { StandMap } from '../public/StandMap';
 import { ConfirmButton, Logo } from '../ui';
@@ -27,13 +27,45 @@ export function Startups({ data, reload }: PageProps) {
   const [form, setForm] = useState<Form | null>(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
+  const [note, setNote] = useState('');
+  const [companies, setCompanies] = useState<PortfolioCompany[]>([]);
+  const [companyQuery, setCompanyQuery] = useState('');
+  const [syncing, setSyncing] = useState(false);
+
+  // Empresas do portfolio (só com Supabase), para ligar uma startup ao sistema.
+  useEffect(() => {
+    api.listPortfolioCompanies?.().then(setCompanies, () => setCompanies([]));
+  }, []);
+  const companyName = (id?: string | null) => companies.find((c) => c.id === id)?.name ?? '';
 
   const set = <K extends keyof Form>(k: K, v: Form[K]) => setForm((f) => (f ? { ...f, [k]: v } : f));
   const setFounder = (i: number, patch: Partial<Founder>) => set('founders', form!.founders.map((p, j) => (j === i ? { ...p, ...patch } : p)));
 
   const open = (f: Form) => {
     setErr('');
+    setNote('');
+    setCompanyQuery(companyName(f.portfolio_company_id));
     setForm({ ...f, founders: f.founders.map((p) => ({ ...p })) });
+  };
+
+  const pickCompany = (text: string) => {
+    setCompanyQuery(text);
+    const c = companies.find((x) => x.name.toLowerCase() === text.trim().toLowerCase());
+    setForm((f) => (f ? { ...f, portfolio_company_id: c?.id ?? null, name: f.name || c?.name || '' } : f));
+  };
+
+  const syncAll = async () => {
+    setSyncing(true);
+    setNote('');
+    try {
+      const n = await api.syncFromPortfolio!();
+      await reload();
+      setNote(`${n} startup(s) atualizada(s) com logo, descrição e founders do sistema.`);
+    } catch (e) {
+      setNote(errorMessage(e));
+    } finally {
+      setSyncing(false);
+    }
   };
 
   const save = async () => {
@@ -42,7 +74,10 @@ export function Startups({ data, reload }: PageProps) {
     setBusy(true);
     setErr('');
     try {
-      await api.saveStartup({ ...form, name: form.name.trim(), founders: form.founders.filter((p) => p.name.trim()) });
+      const before = data.startups.find((s) => s.id === form.id);
+      const id = await api.saveStartup({ ...form, name: form.name.trim(), founders: form.founders.filter((p) => p.name.trim()) });
+      // Ligou agora a uma empresa do portfolio: já traz logo, descrição e founders de lá.
+      if (form.portfolio_company_id && form.portfolio_company_id !== before?.portfolio_company_id) await api.syncFromPortfolio?.(id);
       await reload();
       setForm(null);
     } catch (e) {
@@ -75,11 +110,17 @@ export function Startups({ data, reload }: PageProps) {
   return (
     <>
       <PageHead kicker="Ordem dos pitchs" title="Startups" sub="Clique numa posição para editar ou preencher. Os blocos e o número de posições ficam em Evento.">
+        {api.syncFromPortfolio && (
+          <button className="btn ghost" disabled={syncing || !data.startups.some((s) => s.portfolio_company_id)} onClick={syncAll}>
+            {syncing ? 'Atualizando…' : 'Atualizar do sistema'}
+          </button>
+        )}
         <button className="btn primary" disabled={!blocks.length} onClick={() => open(firstFree())}>
           + Nova startup
         </button>
       </PageHead>
 
+      {note && <div className="notice info" style={{ marginBottom: 16 }}>{note}</div>}
       <div className={form ? 'split' : ''}>
         <div>
           <div className="card">
@@ -162,6 +203,32 @@ export function Startups({ data, reload }: PageProps) {
                   )}
                 </div>
               </div>
+              {api.listPortfolioCompanies && (
+                <label className="field">
+                  <span>Empresa no portfolio</span>
+                  <input
+                    className="input"
+                    list="portfolio-companies"
+                    placeholder="Busque pelo nome no sistema"
+                    value={companyQuery}
+                    onChange={(e) => pickCompany(e.target.value)}
+                  />
+                  <datalist id="portfolio-companies">
+                    {companies.map((c) => (
+                      <option key={c.id} value={c.name}>
+                        {c.founders} founder(s){c.has_logo ? ' · com logo' : ''}
+                      </option>
+                    ))}
+                  </datalist>
+                  <small className="muted small">
+                    {form.portfolio_company_id
+                      ? 'Logo, descrição, setor · estágio e founders (com foto) vêm do sistema ao salvar e em "Atualizar do sistema".'
+                      : companyQuery
+                        ? 'Nenhuma empresa com esse nome no sistema.'
+                        : 'Opcional. Ligando, os dados vêm do sistema.'}
+                  </small>
+                </label>
+              )}
               <label className="field">
                 <span>Nome</span>
                 <input className="input" value={form.name} onChange={(e) => set('name', e.target.value)} autoFocus />
@@ -210,6 +277,7 @@ export function Startups({ data, reload }: PageProps) {
                 <span>Founders</span>
                 {form.founders.map((p, i) => (
                   <div key={i} className="founder-row">
+                    {p.photo_url ? <img className="avatar sm" src={p.photo_url} alt="" /> : <span className="avatar sm" aria-hidden="true">{initials(p.name || '?')}</span>}
                     <input className="input" placeholder="Nome" value={p.name} onChange={(e) => setFounder(i, { name: e.target.value })} aria-label="Nome do founder" />
                     <input className="input" placeholder="Cargo" value={p.role} onChange={(e) => setFounder(i, { role: e.target.value })} aria-label="Cargo" />
                     <button className="iconbtn" aria-label="Remover founder" onClick={() => set('founders', form.founders.filter((_, j) => j !== i))}>

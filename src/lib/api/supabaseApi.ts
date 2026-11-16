@@ -1,5 +1,5 @@
 import { createClient, type PostgrestError } from '@supabase/supabase-js';
-import { ApiError, type Api, type ApiErrorCode, type AttendeeSession, type MyRating, type PublicData, type Startup } from './types';
+import { ApiError, type Api, type ApiErrorCode, type AttendeeSession, type MyRating, type PortfolioCompany, type PublicData, type Startup } from './types';
 
 const KNOWN: ApiErrorCode[] = ['not_registered', 'invalid_session', 'voting_closed'];
 
@@ -14,7 +14,7 @@ const T = {
 } as const;
 
 // No banco o bloco da startup é `block_id`; no app, `category_id`.
-const STARTUP_COLS = 'id, category_id:block_id, position, name, tagline, summary, logo_url, founders, stand';
+const STARTUP_COLS = 'id, category_id:block_id, position, name, tagline, summary, logo_url, founders, stand, portfolio_company_id';
 const toRow = ({ category_id, ...s }: Partial<Startup>) => ({ ...s, ...(category_id ? { block_id: category_id } : {}) });
 
 function fail(error: PostgrestError | Error | null): never {
@@ -103,7 +103,17 @@ export function createSupabaseApi(url: string, key: string): Api {
       ok(await db.from(T.attendees).delete().in('id', ids));
     },
     async saveStartup({ id, ...s }) {
-      ok(id ? await db.from(T.startups).update(toRow(s)).eq('id', id) : await db.from(T.startups).insert(toRow(s)));
+      if (id) {
+        ok(await db.from(T.startups).update(toRow(s)).eq('id', id));
+        return id;
+      }
+      return (ok(await db.from(T.startups).insert(toRow(s)).select('id').single()) as { id: string }).id;
+    },
+    async listPortfolioCompanies() {
+      return ok(await db.rpc('demoday_app_portfolio_companies')) as PortfolioCompany[];
+    },
+    async syncFromPortfolio(startupId) {
+      return ok(await db.rpc('demoday_app_sync_from_portfolio', startupId ? { p_startup_id: startupId } : {})) as number;
     },
     async deleteStartup(id) {
       ok(await db.from(T.startups).delete().eq('id', id));

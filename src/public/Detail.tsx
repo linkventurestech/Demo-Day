@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { INTERESTS, type Startup } from '../lib/api';
 import { errorMessage } from '../lib/errors';
-import { initials, pad, pitchIndex, type Block } from '../lib/lineup';
+import { initials, pad, pitchIndex, shortName, type Block } from '../lib/lineup';
 import { Check, Chevron, Logo } from '../ui';
 import type { Draft } from './PublicApp';
 
@@ -82,10 +82,16 @@ export function Detail({ startup: co, blocks, draft, sent, votingOpen, onChange,
             <div className="founders">
               {co.founders.map((p, i) => (
                 <div key={i} className="founder">
-                  <span aria-hidden="true" className="avatar">
-                    {initials(p.name)}
+                  {p.photo_url ? (
+                    <img className="avatar" src={p.photo_url} alt="" loading="lazy" />
+                  ) : (
+                    <span aria-hidden="true" className="avatar">
+                      {initials(shortName(p.name))}
+                    </span>
+                  )}
+                  <span className="n" title={p.name}>
+                    {shortName(p.name)}
                   </span>
-                  <span className="n">{p.name}</span>
                   <span className="r">{p.role}</span>
                 </div>
               ))}

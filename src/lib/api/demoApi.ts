@@ -5,8 +5,8 @@ import { ApiError, type AdminData, type Api, type Attendee, type Rating } from '
  * Backend local (localStorage) com as mesmas regras do banco, para testar o
  * app sem Supabase configurado. Os dados ficam só neste navegador.
  */
-// v3: respostas de exemplo (v2 trouxe os blocos Investment Round e Showcase).
-const KEY = 'dd-demo-db-v3';
+// v5: 10 empresas, com Centra e Tubushi de volta (v4 tinha 8).
+const KEY = 'dd-demo-db-v5';
 
 interface Db extends AdminData {
   sessions: Record<string, string>; // token → attendee_id
@@ -162,9 +162,11 @@ export function createDemoApi(): Api {
       const d = db();
       if (d.startups.some((x) => x.id !== s.id && x.category_id === s.category_id && x.position === s.position)) throw new ApiError('slot_taken');
       if (s.stand != null && d.startups.some((x) => x.id !== s.id && x.stand === s.stand)) throw new ApiError('stand_taken');
+      const id = s.id ?? uid();
       if (s.id) Object.assign(d.startups.find((x) => x.id === s.id)!, s);
-      else d.startups.push({ ...s, id: uid() });
+      else d.startups.push({ ...s, id });
       save();
+      return id;
     },
     async deleteStartup(id) {
       const d = db();
