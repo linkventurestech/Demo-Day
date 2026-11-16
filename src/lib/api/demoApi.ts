@@ -13,6 +13,24 @@ interface Db extends AdminData {
   admin: string | null;
 }
 
+/**
+ * Imagens embutidas numa prévia publicada onde a página não pode carregar imagens de
+ * outros endereços (o build da prévia injeta window.__DD_DEMO_IMAGES__ com data URLs).
+ * Chave = nome da startup; fotos por nome completo do founder.
+ */
+type DemoImages = Record<string, { logo: string | null; photos: Record<string, string> }>;
+
+function applyDemoImages(d: Db) {
+  const imgs = (globalThis as { __DD_DEMO_IMAGES__?: DemoImages }).__DD_DEMO_IMAGES__;
+  if (!imgs) return;
+  for (const s of d.startups) {
+    const i = imgs[s.name];
+    if (!i) continue;
+    s.logo_url ??= i.logo;
+    for (const f of s.founders) f.photo_url ??= i.photos[f.name] ?? null;
+  }
+}
+
 const uid = () => (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now().toString(36));
 const now = () => new Date().toISOString();
 
@@ -29,7 +47,7 @@ function fresh(): Db {
     created_at: ago(min),
     updated_at: ago(min),
   }));
-  return {
+  const db: Db = {
     settings: { ...SEED_SETTINGS },
     categories: SEED_CATEGORIES.map((c) => ({ ...c })),
     startups: SEED_STARTUPS.map((s) => ({ ...s, founders: [...s.founders] })),
@@ -42,6 +60,8 @@ function fresh(): Db {
     sessions: {},
     admin: null,
   };
+  applyDemoImages(db);
+  return db;
 }
 
 function load(): Db {
@@ -51,6 +71,7 @@ function load(): Db {
       // Quem já abriu uma versão anterior da prévia também recebe os e-mails liberados depois.
       const d = JSON.parse(raw) as Db;
       for (const s of d.startups) s.stand ??= null;
+      applyDemoImages(d);
       for (const email of SEED_ATTENDEES)
         if (!d.attendees.some((a) => a.email === email))
           d.attendees.push({ id: uid(), email, name: null, company: null, created_at: now(), last_login_at: null });
