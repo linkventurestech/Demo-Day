@@ -32,8 +32,8 @@ describe('buildLineup', () => {
   it('numera os pitchs em sequência entre blocos', () => {
     const blocks = buildLineup(SEED_CATEGORIES, SEED_STARTUPS);
     expect(blocks.map((b) => b.category.name)).toEqual(['Investment Round', 'Showcase']);
-    expect(blocks.map((b) => b.info)).toEqual(['Pitchs 01–05', 'Pitchs 06–10']);
-    expect(pitchIndex(blocks)).toMatchObject({ dressy: { num: '01' }, centra: { num: '05' }, naoeummapa: { num: '06' }, tubushi: { num: '10' } });
+    expect(blocks.map((b) => b.info)).toEqual(['Pitchs 01–06', 'Pitchs 07–12']);
+    expect(pitchIndex(blocks)).toMatchObject({ dressy: { num: '01' }, 'rodo-s': { num: '06' }, naoeummapa: { num: '07' }, 'vitra-energy': { num: '12' } });
     expect(blocks.flatMap((b) => b.slots).every((s) => s.startup)).toBe(true);
   });
 

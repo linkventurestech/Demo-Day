@@ -8,8 +8,8 @@ export const SEED_SETTINGS: EventSettings = {
 };
 
 export const SEED_CATEGORIES: Category[] = [
-  { id: 'ss', name: 'Investment Round', position: 1, slots: 5 },
-  { id: 'show', name: 'Showcase', position: 2, slots: 5 },
+  { id: 'ss', name: 'Investment Round', position: 1, slots: 6 },
+  { id: 'show', name: 'Showcase', position: 2, slots: 6 },
 ];
 
 // Espelha o banco em 2026-11-16 (dados puxados do portfolio). Fotos e logos ficam de fora:
@@ -63,6 +63,15 @@ export const SEED_STARTUPS: Startup[] = [
     ],
   },
   {
+    id: 'rodo-s', category_id: 'ss', position: 6, name: 'Rodo-S', logo_url: null, stand: null,
+    tagline: 'Serviços · Monetização Inicial',
+    summary: 'A RODO-S é uma plataforma de inteligência e controle de diesel para frotas de caminhões-cegonha. Ela centraliza dados de abastecimento e operação para identificar desvios de consumo.',
+    founders: [
+      { name: 'Davi Generoso', role: 'Founder' },
+      { name: 'Luiz Eduardo Moura Ferraz', role: 'Co-founder' },
+    ],
+  },
+  {
     id: 'naoeummapa', category_id: 'show', position: 1, name: 'NaoeumMapa', logo_url: null, stand: null,
     tagline: 'Tecnologia · Monetização Inicial',
     summary: 'Criamos mundos digitais que nascem da audiência e viram comunidades. Em 1 mês, +350 mil pessoas já constroem, disputam e interagem nos nossos jogos. Tudo feito por dois fundadores e agentes de IA.',
@@ -102,6 +111,12 @@ export const SEED_STARTUPS: Startup[] = [
     tagline: 'Varejo · Escala',
     summary: 'A Tubushi criou o primeiro sushi no tubo de São Paulo, com a proposta de trazer um sushi fresco e de qualidade para momentos que não se permitem comer um sushi de forma tradicional.',
     founders: [{ name: 'Lucas Griso Fuentes Requena', role: 'Founder' }],
+  },
+  {
+    id: 'vitra-energy', category_id: 'show', position: 6, name: 'Vitra Energy', logo_url: null, stand: null,
+    tagline: 'Saúde e Bem-estar · Validação',
+    summary: 'A Vitra Energy é um energético natural e funcional para jovens que buscam energia, foco e vitalidade. Com cafeína natural e ingredientes funcionais, acompanha uma rotina ativa, saudável e dinâmica.',
+    founders: [{ name: 'Fernanda Knijnik', role: 'Founder' }],
   },
 ];
 
