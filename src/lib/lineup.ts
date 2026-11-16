@@ -44,6 +44,12 @@ export function pitchIndex(blocks: Block[]) {
   return map;
 }
 
+/** Primeiro nome + último sobrenome, como no protótipo ("Gabriela Mascarenhas Robatine Vital" → "Gabriela Vital"). */
+export const shortName = (name: string) => {
+  const w = name.trim().split(/\s+/).filter(Boolean);
+  return w.length <= 2 ? w.join(' ') : w[0] + ' ' + w[w.length - 1];
+};
+
 export const initials = (name: string) =>
   name
     .split(/\s+/)

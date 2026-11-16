@@ -26,6 +26,16 @@ export interface Category {
 export interface Founder {
   name: string;
   role: string;
+  /** Foto vinda do portfolio (bucket público profile-photos), ou ausente. */
+  photo_url?: string | null;
+}
+
+/** Empresa do portfolio que pode ser ligada a uma startup do Demo Day. */
+export interface PortfolioCompany {
+  id: string;
+  name: string;
+  has_logo: boolean;
+  founders: number;
 }
 
 export interface Startup {
@@ -39,6 +49,8 @@ export interface Startup {
   founders: Founder[];
   /** Stand no mapa do Showcase (1–12), ou null. */
   stand: number | null;
+  /** Empresa no portfolio de onde vêm logo, descrição e founders. */
+  portfolio_company_id?: string | null;
 }
 
 export interface Juror {
@@ -120,13 +132,18 @@ export interface Api {
   adminSignIn(email: string, password: string): Promise<void>;
   /** Login Google do portfolio; só existe com Supabase. Redireciona a página. */
   adminSignInWithGoogle?(): Promise<void>;
+  /** Só com Supabase: empresas do portfolio, para ligar a uma startup. */
+  listPortfolioCompanies?(): Promise<PortfolioCompany[]>;
+  /** Só com Supabase: copia logo, descrição e founders do portfolio (uma startup ou todas as ligadas). */
+  syncFromPortfolio?(startupId?: string): Promise<number>;
   adminSignOut(): Promise<void>;
   /** E-mail do admin logado, ou null. */
   adminCurrent(): Promise<string | null>;
   getAdminData(): Promise<AdminData>;
   upsertAttendees(rows: AttendeeInput[]): Promise<number>;
   deleteAttendees(ids: string[]): Promise<void>;
-  saveStartup(s: Omit<Startup, 'id'> & { id?: string }): Promise<void>;
+  /** Salva e devolve o id da startup. */
+  saveStartup(s: Omit<Startup, 'id'> & { id?: string }): Promise<string>;
   deleteStartup(id: string): Promise<void>;
   saveJuror(j: Omit<Juror, 'id'> & { id?: string }): Promise<void>;
   deleteJuror(id: string): Promise<void>;

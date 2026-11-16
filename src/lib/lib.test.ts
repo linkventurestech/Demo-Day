@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { parseAttendees, toCsv } from './csv';
-import { buildLineup, pitchIndex } from './lineup';
+import { buildLineup, pitchIndex, shortName } from './lineup';
 import { aggregate, connectionRows } from './results';
 import { PLAN, standLayout, standOccupants } from './stands';
 import { SEED_CATEGORIES, SEED_STARTUPS } from './api/seed';
@@ -32,9 +32,9 @@ describe('buildLineup', () => {
   it('numera os pitchs em sequência entre blocos', () => {
     const blocks = buildLineup(SEED_CATEGORIES, SEED_STARTUPS);
     expect(blocks.map((b) => b.category.name)).toEqual(['Investment Round', 'Showcase']);
-    expect(blocks.map((b) => b.info)).toEqual(['Pitchs 01–08', 'Pitchs 09–18']);
-    expect(pitchIndex(blocks)).toMatchObject({ dressy: { num: '01' }, centra: { num: '02' }, tubushi: { num: '09' } });
-    expect(blocks[0].slots[2].startup).toBeNull();
+    expect(blocks.map((b) => b.info)).toEqual(['Pitchs 01–04', 'Pitchs 05–08']);
+    expect(pitchIndex(blocks)).toMatchObject({ dressy: { num: '01' }, sincra: { num: '04' }, naoeummapa: { num: '05' }, persint: { num: '08' } });
+    expect(blocks.flatMap((b) => b.slots).every((s) => s.startup)).toBe(true);
   });
 
   it('alonga o bloco quando uma startup passa do número de posições', () => {
@@ -99,8 +99,15 @@ describe('standLayout', () => {
   });
 
   it('mapeia cada stand ocupado para a sua startup', () => {
-    const m = standOccupants(SEED_STARTUPS);
-    expect(m.get(1)?.name).toBe('Tubushi');
+    const m = standOccupants(SEED_STARTUPS.map((s) => (s.id === 'drafted' ? { ...s, stand: 3 } : s)));
+    expect(m.get(3)?.name).toBe('Drafted');
     expect(m.size).toBe(1);
   });
+});
+
+it('shortName usa primeiro nome e último sobrenome', () => {
+  expect(shortName('Gabriela Mascarenhas Robatine Vital')).toBe('Gabriela Vital');
+  expect(shortName('João Manoel Ammar de Carvalho')).toBe('João Carvalho');
+  expect(shortName('Izabela Varotti')).toBe('Izabela Varotti');
+  expect(shortName('  Italo  ')).toBe('Italo');
 });

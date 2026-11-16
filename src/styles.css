@@ -214,7 +214,7 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
 .grid3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; }
 .row-actions { display: flex; gap: 8px; justify-content: flex-end; }
 .logo-edit { display: flex; align-items: center; gap: 12px; }
-.founder-row { display: grid; grid-template-columns: minmax(0, 1fr) 120px 32px; gap: 6px; }
+.founder-row { display: grid; grid-template-columns: 40px minmax(0, 1fr) 120px 32px; gap: 6px; align-items: center; }
 .iconbtn { width: 32px; height: 40px; border: 0; background: none; color: var(--slate); cursor: pointer; border-radius: 8px; font-size: 18px; }
 .iconbtn:hover { background: var(--paper); color: var(--red); }
 .switch { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; font-size: 15px; font-weight: 600; }
@@ -270,3 +270,5 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
 .stand-link b { font-family: var(--mono); font-size: 12px; }
 .admin-plan { display: flex; justify-content: center; }
 .admin-plan .plan { max-width: 360px; }
+img.avatar { object-fit: cover; padding: 0; }
+.avatar.sm { width: 36px; height: 36px; font-size: 11px; }
