@@ -138,7 +138,7 @@ export const SEED_JURORS: Juror[] = [
   juror(3, 'Pedro Teo', 'Norte Ventures', 'pedro-teo'),
   juror(4, 'Rodrigo Borges', 'domo.vc', 'rodrigo-borges'),
   juror(5, 'Vitória Bittar', 'Monashees', 'vitoria-bittar'),
-  juror(6, 'Victoria Pacey Amato', 'Maya Capital', 'victoria-pacey-amato', 'Investor'),
+  juror(6, 'Victoria Amato', 'Maya Capital', 'victoria-pacey-amato'),
 ];
 
 // VITE_DEMO_ATTENDEES (e-mails separados por vírgula) libera mais gente numa prévia, sem pôr e-mails no código.

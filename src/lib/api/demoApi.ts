@@ -5,8 +5,8 @@ import { ApiError, type AdminData, type Api, type Attendee, type Rating } from '
  * Backend local (localStorage) com as mesmas regras do banco, para testar o
  * app sem Supabase configurado. Os dados ficam só neste navegador.
  */
-// v7: os 6 jurados da edição 2026.2 (v6 trouxe Rodo-S e Vitra Energy).
-const KEY = 'dd-demo-db-v7';
+// v8: jurada como "Victoria Amato", sem cargo (v7 trouxe os 6 jurados da edição 2026.2).
+const KEY = 'dd-demo-db-v8';
 
 interface Db extends AdminData {
   sessions: Record<string, string>; // token → attendee_id
