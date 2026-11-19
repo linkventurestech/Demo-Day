@@ -112,6 +112,9 @@ export function createSupabaseApi(url: string, key: string): Api {
     async listPortfolioCompanies() {
       return ok(await db.rpc('demoday_app_portfolio_companies')) as PortfolioCompany[];
     },
+    async syncJurorsFromPortfolio() {
+      return ok(await db.rpc('demoday_app_sync_jurors_from_portfolio')) as number;
+    },
     async syncFromPortfolio(startupId) {
       return ok(await db.rpc('demoday_app_sync_from_portfolio', startupId ? { p_startup_id: startupId } : {})) as number;
     },

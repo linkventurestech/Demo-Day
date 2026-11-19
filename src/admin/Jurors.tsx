@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { api, type Juror } from '../lib/api';
+import { api, jurorTitle, type Juror } from '../lib/api';
 import { errorMessage } from '../lib/errors';
 import { toSquareDataUrl } from '../lib/image';
 import { ConfirmButton } from '../ui';
@@ -11,6 +11,8 @@ export function Jurors({ data, reload }: PageProps) {
   const [form, setForm] = useState<Form | null>(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
+  const [note, setNote] = useState('');
+  const [syncing, setSyncing] = useState(false);
   const set = <K extends keyof Form>(k: K, v: Form[K]) => setForm((f) => (f ? { ...f, [k]: v } : f));
 
   const save = async () => {
@@ -34,21 +36,41 @@ export function Jurors({ data, reload }: PageProps) {
     if (form?.id === j.id) setForm(null);
   };
 
+  const syncAll = async () => {
+    setSyncing(true);
+    setNote('');
+    try {
+      const n = await api.syncJurorsFromPortfolio!();
+      await reload();
+      setNote(`${n} jurado(s) atualizado(s) com nome, empresa, foto e o que houver de cargo e descrição no sistema.`);
+    } catch (e) {
+      setNote(errorMessage(e));
+    } finally {
+      setSyncing(false);
+    }
+  };
+
   const nextPos = Math.max(0, ...data.jurors.map((j) => j.position)) + 1;
 
   return (
     <>
       <PageHead kicker="Tela “Conheça os jurados”" title="Jurados" sub="Sem jurados cadastrados, o botão some do app do público.">
+        {api.syncJurorsFromPortfolio && (
+          <button className="btn ghost" onClick={syncAll} disabled={syncing}>
+            {syncing ? 'Atualizando…' : 'Atualizar do sistema'}
+          </button>
+        )}
         <button
           className="btn primary"
           onClick={() => {
             setErr('');
-            setForm({ name: '', role: '', photo_url: null, position: nextPos });
+            setForm({ name: '', role: '', company: '', bio: '', photo_url: null, linkedin_url: null, position: nextPos });
           }}
         >
           + Novo jurado
         </button>
       </PageHead>
+      {note && <div className="notice info" style={{ marginBottom: 16 }}>{note}</div>}
       <div className={form ? 'split' : ''}>
         <div className="card">
           {data.jurors.length === 0 ? (
@@ -72,8 +94,14 @@ export function Jurors({ data, reload }: PageProps) {
                         <span>
                           {j.name}
                           <div className="muted small" style={{ fontWeight: 400 }}>
-                            {j.role}
+                            {jurorTitle(j)}
+                            {j.portfolio_juror_id ? ' · do sistema' : ''}
                           </div>
+                          {!j.bio && (
+                            <div className="small" style={{ fontWeight: 400, color: 'var(--red)' }}>
+                              Sem descrição
+                            </div>
+                          )}
                         </span>
                       </div>
                     </td>
@@ -121,10 +149,34 @@ export function Jurors({ data, reload }: PageProps) {
                 <span>Nome</span>
                 <input className="input" value={form.name} onChange={(e) => set('name', e.target.value)} autoFocus />
               </label>
+              <div className="grid2">
+                <label className="field">
+                  <span>Cargo</span>
+                  <input className="input" placeholder="Partner" value={form.role} onChange={(e) => set('role', e.target.value)} />
+                </label>
+                <label className="field">
+                  <span>Empresa</span>
+                  <input className="input" value={form.company} onChange={(e) => set('company', e.target.value)} />
+                </label>
+              </div>
               <label className="field">
-                <span>Cargo · Empresa</span>
-                <input className="input" value={form.role} onChange={(e) => set('role', e.target.value)} />
+                <span>Descrição</span>
+                <textarea
+                  className="textarea"
+                  placeholder="Duas ou três frases sobre a trajetória e a tese de investimento."
+                  value={form.bio}
+                  onChange={(e) => set('bio', e.target.value)}
+                />
               </label>
+              <label className="field">
+                <span>LinkedIn</span>
+                <input className="input" placeholder="https://www.linkedin.com/in/…" value={form.linkedin_url ?? ''} onChange={(e) => set('linkedin_url', e.target.value.trim() || null)} />
+              </label>
+              {form.portfolio_juror_id && (
+                <small className="muted small">
+                  Este jurado vem do sistema. Nome, empresa e foto são atualizados de lá; cargo e descrição escritos aqui ficam enquanto o sistema não tiver os seus.
+                </small>
+              )}
               <label className="field">
                 <span>Ordem</span>
                 <input className="input" type="number" value={form.position} onChange={(e) => set('position', Number(e.target.value) || 0)} />

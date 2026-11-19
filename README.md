@@ -27,7 +27,7 @@ Usa o **mesmo projeto Supabase do portfolio** (`link_portfolio`). Tudo do Demo D
 | `demoday_app_settings` | nome do evento, texto de entrada, votação aberta | todos |
 | `demoday_app_blocks` | blocos da ordem (Inspiration, Startup School…) e nº de posições | todos |
 | `demoday_app_startups` | startups, posição no bloco, logo, founders (com foto), stand no mapa, empresa no portfolio | todos |
-| `demoday_app_jurors` | jurados | todos |
+| `demoday_app_jurors` | jurados (foto, cargo, empresa, descrição, LinkedIn) | todos |
 | `demoday_app_attendees` | e-mails liberados (nome, empresa, último acesso) | equipe |
 | `demoday_app_ratings` | nota e interesses por pessoa × startup | equipe |
 | `demoday_app_sessions` | tokens de sessão do público | ninguém (só funções) |
@@ -35,6 +35,10 @@ Usa o **mesmo projeto Supabase do portfolio** (`link_portfolio`). Tudo do Demo D
 ### Dados das startups vêm do portfolio
 
 Cada startup pode ser ligada à empresa no portfolio (campo "Empresa no portfolio" no painel). Ao ligar, e no botão **Atualizar do sistema** da página Startups, o banco copia de lá o logo, a descrição curta, "setor · estágio" e os founders ativos (quem está marcado como founder ou tem "founder" no cargo), com nome, cargo e foto. Nome, bloco, posição e stand continuam sendo do Demo Day. A cópia é feita pela função `demoday_app_sync_from_portfolio`, que só admin/link_staff chamam.
+
+### Jurados vêm do portfolio
+
+A página **Jurados** do painel tem **Atualizar do sistema**: copia os jurados publicados da edição do portfolio (`demoday_juror`, edição em `demoday_app_settings.portfolio_edition`, hoje `2026.2`). Nome, empresa e foto vêm sempre de lá; cargo e descrição vêm de lá quando preenchidos, senão fica o que foi escrito no painel. As fotos do portfolio são caminhos do site dele (`/demoday/2026-2/jurors/…`); cópias ficam em `public/demoday/2026-2/jurors/` para o mesmo caminho funcionar aqui. Jurado novo com foto nova: copie o arquivo do portfolio-hub para a mesma pasta.
 
 ### Quem acessa o admin
 

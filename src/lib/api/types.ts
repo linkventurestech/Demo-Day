@@ -57,9 +57,18 @@ export interface Juror {
   id: string;
   name: string;
   role: string;
+  company: string;
+  /** Descrição exibida em "Conheça os jurados". */
+  bio: string;
   photo_url: string | null;
+  linkedin_url: string | null;
   position: number;
+  /** Jurado no portfolio (demoday_juror) de onde vêm nome, empresa, foto, cargo e bio. */
+  portfolio_juror_id?: string | null;
 }
+
+/** "Investor · Maya Capital", ou só a parte que existir. */
+export const jurorTitle = (j: Pick<Juror, 'role' | 'company'>) => [j.role, j.company].map((s) => s.trim()).filter(Boolean).join(' · ');
 
 export interface PublicData {
   settings: EventSettings;
@@ -136,6 +145,8 @@ export interface Api {
   listPortfolioCompanies?(): Promise<PortfolioCompany[]>;
   /** Só com Supabase: copia logo, descrição e founders do portfolio (uma startup ou todas as ligadas). */
   syncFromPortfolio?(startupId?: string): Promise<number>;
+  /** Só com Supabase: copia os jurados publicados da edição do portfolio. */
+  syncJurorsFromPortfolio?(): Promise<number>;
   adminSignOut(): Promise<void>;
   /** E-mail do admin logado, ou null. */
   adminCurrent(): Promise<string | null>;

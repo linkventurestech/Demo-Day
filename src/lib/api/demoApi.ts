@@ -5,8 +5,8 @@ import { ApiError, type AdminData, type Api, type Attendee, type Rating } from '
  * Backend local (localStorage) com as mesmas regras do banco, para testar o
  * app sem Supabase configurado. Os dados ficam só neste navegador.
  */
-// v6: 12 empresas, com Rodo-S e Vitra Energy (v5 tinha 10).
-const KEY = 'dd-demo-db-v6';
+// v7: os 6 jurados da edição 2026.2 (v6 trouxe Rodo-S e Vitra Energy).
+const KEY = 'dd-demo-db-v7';
 
 interface Db extends AdminData {
   sessions: Record<string, string>; // token → attendee_id
@@ -21,7 +21,13 @@ interface Db extends AdminData {
 type DemoImages = Record<string, { logo: string | null; photos: Record<string, string> }>;
 
 function applyDemoImages(d: Db) {
-  const imgs = (globalThis as { __DD_DEMO_IMAGES__?: DemoImages }).__DD_DEMO_IMAGES__;
+  const g = globalThis as { __DD_DEMO_IMAGES__?: DemoImages; __DD_DEMO_JUROR_PHOTOS__?: Record<string, string> };
+  // Jurados: troca o caminho relativo (/demoday/…) pela foto embutida.
+  for (const j of d.jurors) {
+    const photo = g.__DD_DEMO_JUROR_PHOTOS__?.[j.name];
+    if (photo && (!j.photo_url || j.photo_url.startsWith('/'))) j.photo_url = photo;
+  }
+  const imgs = g.__DD_DEMO_IMAGES__;
   if (!imgs) return;
   for (const s of d.startups) {
     const i = imgs[s.name];
@@ -51,7 +57,7 @@ function fresh(): Db {
     settings: { ...SEED_SETTINGS },
     categories: SEED_CATEGORIES.map((c) => ({ ...c })),
     startups: SEED_STARTUPS.map((s) => ({ ...s, founders: [...s.founders] })),
-    jurors: [...SEED_JURORS],
+    jurors: SEED_JURORS.map((j) => ({ ...j })),
     attendees: [
       ...SEED_ATTENDEES.map((email) => ({ id: uid(), email, name: null, company: null, created_at: created, last_login_at: null })),
       ...examples,
