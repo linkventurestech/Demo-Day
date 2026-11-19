@@ -120,7 +120,26 @@ export const SEED_STARTUPS: Startup[] = [
   },
 ];
 
-export const SEED_JURORS: Juror[] = [];
+// Banca do Investment Round, como no portfolio (demoday_juror, edição 2026.2). Fotos em public/demoday/2026-2/jurors.
+const juror = (n: number, name: string, company: string, file: string, role = ''): Juror => ({
+  id: 'juror-' + n,
+  name,
+  role,
+  company,
+  bio: '',
+  photo_url: `/demoday/2026-2/jurors/${file}.jpg`,
+  linkedin_url: null,
+  position: n,
+});
+
+export const SEED_JURORS: Juror[] = [
+  juror(1, 'Gabriela Lima', 'BTG boostlab', 'gabriela-lima'),
+  juror(2, 'Marcelo Franco', 'Verve Capital', 'marcelo-franco'),
+  juror(3, 'Pedro Teo', 'Norte Ventures', 'pedro-teo'),
+  juror(4, 'Rodrigo Borges', 'domo.vc', 'rodrigo-borges'),
+  juror(5, 'Vitória Bittar', 'Monashees', 'vitoria-bittar'),
+  juror(6, 'Victoria Pacey Amato', 'Maya Capital', 'victoria-pacey-amato', 'Investor'),
+];
 
 // VITE_DEMO_ATTENDEES (e-mails separados por vírgula) libera mais gente numa prévia, sem pôr e-mails no código.
 const extra = ((import.meta.env.VITE_DEMO_ATTENDEES as string | undefined) ?? '')
