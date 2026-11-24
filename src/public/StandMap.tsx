@@ -1,6 +1,6 @@
 import type { Startup } from '../lib/api';
 import { pad } from '../lib/lineup';
-import { PLAN, STAND_COUNT, standLayout, standOccupants } from '../lib/stands';
+import { PLAN, STAND_COUNT, planHeight, standLayout, standOccupants } from '../lib/stands';
 
 const fit = (name: string, max: number) => (name.length > max ? name.slice(0, max - 1) + '…' : name);
 
@@ -15,7 +15,8 @@ interface Props {
 export function StandMap({ startups, focus, onPick }: Props) {
   const boxes = standLayout(STAND_COUNT);
   const who = standOccupants(startups);
-  const { width, height, pad: p, top, arm } = PLAN;
+  const { width, pad: p, top, arm } = PLAN;
+  const height = planHeight(STAND_COUNT);
   const inner = { x: p + arm, y: top, w: width - 2 * (p + arm) };
   const baseY = boxes.find((b) => b.side === 'base')!.y;
 
@@ -60,7 +61,7 @@ export function StandMap({ startups, focus, onPick }: Props) {
               {pad(b.n)}
             </text>
             <text x={b.x + b.w / 2} y={b.y + b.h / 2 + (b.side === 'base' ? 10 : 8)} className="stand-name" textAnchor="middle">
-              {s ? fit(s.name, b.side === 'base' ? 10 : 11) : 'Livre'}
+              {s ? fit(s.name, Math.max(6, Math.floor((b.w - 8) / 7.2))) : 'Livre'}
             </text>
           </g>
         );
