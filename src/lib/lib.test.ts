@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { parseAttendees, toCsv } from './csv';
 import { buildLineup, pitchIndex, shortName } from './lineup';
 import { aggregate, connectionRows } from './results';
-import { PLAN, standLayout, standOccupants } from './stands';
+import { PLAN, planHeight, standLayout, standOccupants } from './stands';
 import { SEED_CATEGORIES, SEED_STARTUPS } from './api/seed';
 import type { Rating } from './api/types';
 
@@ -32,8 +32,8 @@ describe('buildLineup', () => {
   it('numera os pitchs em sequência entre blocos', () => {
     const blocks = buildLineup(SEED_CATEGORIES, SEED_STARTUPS);
     expect(blocks.map((b) => b.category.name)).toEqual(['Investment Round', 'Showcase']);
-    expect(blocks.map((b) => b.info)).toEqual(['Pitchs 01–06', 'Pitchs 07–12']);
-    expect(pitchIndex(blocks)).toMatchObject({ dressy: { num: '01' }, 'rodo-s': { num: '06' }, naoeummapa: { num: '07' }, 'vitra-energy': { num: '12' } });
+    expect(blocks.map((b) => b.info)).toEqual(['Pitchs 01–08', 'Pitchs 09–23']);
+    expect(pitchIndex(blocks)).toMatchObject({ centra: { num: '01' }, trena: { num: '08' }, 'agrosaf-radar': { num: '09' }, 'vitra-energy': { num: '23' } });
     expect(blocks.flatMap((b) => b.slots).every((s) => s.startup)).toBe(true);
   });
 
@@ -72,9 +72,9 @@ it('toCsv escapa separador e aspas', () => {
 describe('standLayout', () => {
   const boxes = standLayout();
 
-  it('distribui 12 stands em U: 4 em cada braço e 4 no fundo', () => {
-    expect(boxes).toHaveLength(12);
-    expect(boxes.map((b) => b.side)).toEqual([...Array(4).fill('left'), ...Array(4).fill('base'), ...Array(4).fill('right')]);
+  it('distribui 15 stands em U: 5 em cada braço e 5 no fundo', () => {
+    expect(boxes).toHaveLength(15);
+    expect(boxes.map((b) => b.side)).toEqual([...Array(5).fill('left'), ...Array(5).fill('base'), ...Array(5).fill('right')]);
   });
 
   it('numera no sentido de quem anda: desce à esquerda, cruza o fundo, sobe à direita', () => {
@@ -91,7 +91,7 @@ describe('standLayout', () => {
       expect(b.x).toBeGreaterThanOrEqual(0);
       expect(b.y).toBeGreaterThanOrEqual(0);
       expect(b.x + b.w).toBeLessThanOrEqual(PLAN.width);
-      expect(b.y + b.h).toBeLessThanOrEqual(PLAN.height);
+      expect(b.y + b.h).toBeLessThanOrEqual(planHeight());
     }
     for (const a of boxes)
       for (const b of boxes)
