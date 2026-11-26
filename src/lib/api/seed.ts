@@ -9,7 +9,7 @@ export const SEED_SETTINGS: EventSettings = {
 
 export const SEED_CATEGORIES: Category[] = [
   { id: 'ss', name: 'Investment Round', position: 1, slots: 8 },
-  { id: 'show', name: 'Showcase', position: 2, slots: 11 },
+  { id: 'show', name: 'Showcase', position: 2, slots: 12 },
 ];
 
 // Espelha o banco (dados puxados do portfolio). Fotos e logos ficam de fora: a prévia
@@ -180,6 +180,15 @@ export const SEED_STARTUPS: Startup[] = [
     summary: 'Ajudamos pessoas a organizarem suas vidas financeiras e a começarem a investir.',
     founders: [
       { name: 'Pedro de Melo Cruz Avena', role: 'Founder' },
+    ],
+  },
+  {
+    id: 'senia', category_id: 'show', position: 12, name: 'Senia', logo_url: null, stand: null,
+    tagline: 'Saúde e Bem-estar · Monetização Inicial',
+    summary: '',
+    founders: [
+      { name: 'Davi Fernandes Rizzo', role: 'Co-Founder' },
+      { name: 'Eduardo Pacheco Kokis', role: 'Founder' },
     ],
   },
 ];

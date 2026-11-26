@@ -4,7 +4,7 @@
 
 insert into public.demoday_app_blocks (id, name, position, slots) values
   ('ss', 'Investment Round', 1, 8),
-  ('show', 'Showcase', 2, 11)
+  ('show', 'Showcase', 2, 12)
 on conflict (id) do nothing;
 
 insert into public.demoday_app_startups (block_id, position, name, portfolio_company_id) values
@@ -26,7 +26,8 @@ insert into public.demoday_app_startups (block_id, position, name, portfolio_com
   ('show', 8, 'Odan Studio', '7ce480c2-f013-4d92-afab-ebd7f6a868a6'),
   ('show', 9, 'How', '35cac886-9e85-41be-924c-657df827ffb0'),
   ('show', 10, 'Vitra Energy', 'a6a16aab-85c9-4149-a375-c73fc0b1bd75'),
-  ('show', 11, 'Auro Finanças', '33752987-78e1-4059-892b-bbeea8c5f85a')
+  ('show', 11, 'Auro Finanças', '33752987-78e1-4059-892b-bbeea8c5f85a'),
+  ('show', 12, 'Senia', '0f4f3104-759d-442f-89ae-beb12f8c21b0')
 on conflict (block_id, position) do nothing;
 
 select public._demoday_app_sync(null);
