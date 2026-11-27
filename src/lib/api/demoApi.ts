@@ -5,8 +5,8 @@ import { ApiError, type AdminData, type Api, type Attendee, type Rating } from '
  * Backend local (localStorage) com as mesmas regras do banco, para testar o
  * app sem Supabase configurado. Os dados ficam só neste navegador.
  */
-// v13: Gabriela (Dressy) como "Gabriela Robatine" (v12 trouxe site e Instagram).
-const KEY = 'dd-demo-db-v13';
+// v14: descrições e fotos atualizadas do portfolio (v13: Gabriela Robatine).
+const KEY = 'dd-demo-db-v14';
 
 interface Db extends AdminData {
   sessions: Record<string, string>; // token → attendee_id

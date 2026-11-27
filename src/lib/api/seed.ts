@@ -29,7 +29,7 @@ export const SEED_STARTUPS: Startup[] = [
     id: 'dressy', category_id: 'ss', position: 2, name: 'Dressy', logo_url: null, stand: null,
     website_url: 'https://dressy.app.br', instagram_url: 'https://www.instagram.com/try.dressy/',
     tagline: '',
-    summary: 'IA para ecommerce de moda feminina. Que transforma a experiência de compra com: Provador Virtual, Descubra seu tamanho e Personal Shopper guiam a cliente do look ao tamanho certo.',
+    summary: 'A Dressy é o Intelligent Autopilot para e-commerces de moda: torna a experiência de compra agêntica, do primeiro clique até a compra, e transforma dados sobre cada cliente em mais conversão pra loja.',
     founders: [
       { name: 'Gabriela Robatine', role: 'Founder' },
       { name: 'Izabela Varotti', role: 'Co-founder' },
@@ -50,7 +50,7 @@ export const SEED_STARTUPS: Startup[] = [
     id: 'stac', category_id: 'ss', position: 4, name: 'Stac', logo_url: null, stand: null,
     website_url: 'https://www.trystac.com', instagram_url: 'https://www.instagram.com/trystac/',
     tagline: '',
-    summary: 'Plataforma de inferência para empresas que querem usar mais IA em produção sem o custo explodir, equilibrando qualidade, desempenho e custo.',
+    summary: 'A Stac é infraestrutura de IA para empresas brasileiras. Testamos modelos abertos no trabalho real da empresa, rodamos tudo numa máquina só dela e cobramos pela máquina, não pelo uso.',
     founders: [
       { name: 'Diogo Chiapeta Garcia', role: 'Founder - CTO' },
       { name: 'Felipe Argolo Assis', role: 'Founder - CEO' },
@@ -60,7 +60,7 @@ export const SEED_STARTUPS: Startup[] = [
     id: 'drafted', category_id: 'ss', position: 5, name: 'Drafted', logo_url: null, stand: null,
     website_url: 'https://www.drafted.com.br', instagram_url: 'https://www.instagram.com/drafted.ag/',
     tagline: '',
-    summary: 'A Drafted é PR para a era da IA. Medimos como sua marca é interpretada por pessoas e por máquinas, montamos a estratégia e executamos conteúdo, presença e creators pra corrigir o que está errado.',
+    summary: 'A Drafted é uma Martech para a era da IA. Medimos como marcas são interpretadas por pessoas e máquinas e transformamos esses dados em estratégias de conteúdo, presença digital e creators.',
     founders: [
       { name: 'Isabela Ortunho Sliesoraitis', role: 'Founder' },
       { name: 'Hugo Teruel Mendes', role: 'Co-founder' },
@@ -115,9 +115,9 @@ export const SEED_STARTUPS: Startup[] = [
   },
   {
     id: 'persint', category_id: 'show', position: 3, name: 'Persint', logo_url: null, stand: null,
-    website_url: 'https://persint.ai', instagram_url: 'https://www.instagram.com/numa.social?igsh=MWw0Y3RhNDNlanpsOA==',
+    website_url: 'https://persint.ai', instagram_url: 'https://www.instagram.com/persint.ai?bqrl=MWFhamg3Z2UwNWl5Zg==',
     tagline: '',
-    summary: 'AI-Native Customer Experience. Experiência única em escala para seus clientes.',
+    summary: 'A Persint cria agentes de IA que conduzem a jornada do cliente em vendas, atendimento e relacionamento, integrados aos sistemas e às regras de cada empresa. A constante da experiência do cliente.',
     founders: [
       { name: 'Davi Moura Marson', role: 'Founder' },
       { name: 'Francisco Pigatto Monteiro', role: 'Founder' },
