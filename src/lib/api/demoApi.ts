@@ -10,6 +10,7 @@ const KEY = 'dd-demo-db-v11';
 
 interface Db extends AdminData {
   sessions: Record<string, string>; // token → attendee_id
+  codes?: Record<string, { code: string; expires: number; attempts: number }>; // e-mail → código pendente
   admin: string | null;
 }
 
@@ -119,10 +120,30 @@ export function createDemoApi(): Api {
       await delay();
       return pub();
     },
-    async login(email) {
+    async requestCode(email) {
       await delay();
-      const a = db().attendees.find((x) => x.email === email.trim().toLowerCase());
+      const e = email.trim().toLowerCase();
+      if (!db().attendees.some((x) => x.email === e)) throw new ApiError('not_registered');
+      // Sem envio de e-mail aqui: o código volta para a tela mostrar.
+      const code = String(Math.floor(Math.random() * 1_000_000)).padStart(6, '0');
+      (db().codes ??= {})[e] = { code, expires: Date.now() + 10 * 60_000, attempts: 0 };
+      save();
+      return { demoCode: code };
+    },
+    async verifyCode(email, code) {
+      await delay();
+      const e = email.trim().toLowerCase();
+      const a = db().attendees.find((x) => x.email === e);
       if (!a) throw new ApiError('not_registered');
+      const c = db().codes?.[e];
+      if (!c || c.expires < Date.now()) throw new ApiError('code_expired');
+      if (c.attempts >= 5) throw new ApiError('too_many_attempts');
+      if (c.code !== code.replace(/\D/g, '')) {
+        c.attempts += 1;
+        save();
+        throw new ApiError(c.attempts >= 5 ? 'too_many_attempts' : 'invalid_code');
+      }
+      delete db().codes![e];
       const token = uid();
       db().sessions[token] = a.id;
       a.last_login_at = now();

@@ -2,7 +2,7 @@
 
 App do Demo Day em duas partes:
 
-- **App do público** (`/`, celular): a pessoa entra só com o e-mail cadastrado, vê a ordem dos pitchs, dá nota de 1 a 5 e sinaliza interesse (investir, fazer negócio, ser parceiro, ser mentor, ficar informado). Mesma estética do protótipo. Inclui o **mapa dos stands**: planta em U com os 12 stands do Showcase; tocar num stand abre a startup.
+- **App do público** (`/`, celular): a pessoa entra com o e-mail cadastrado e um código de 6 dígitos enviado a ele (em cada aparelho novo), vê a ordem dos pitchs, dá nota de 1 a 5 e sinaliza interesse (investir, fazer negócio, ser parceiro, ser mentor, ficar informado). Mesma estética do protótipo. Inclui o **mapa dos stands**: planta em U com os 15 stands do Showcase; tocar num stand abre a startup.
 - **Admin** (`/admin`, desktop): sobe a lista de e-mails liberados, acompanha os resultados ao vivo por startup, vê os pedidos de conexão (quem, qual startup, qual interesse), edita startups, blocos, jurados e abre/encerra a votação. Tudo exporta em CSV (abre direto no Excel).
 
 Cada resposta fica no banco ligada a quem respondeu (`ratings`: e-mail × startup × nota × interesses). Se a pessoa reenvia, a resposta é atualizada, não duplicada.
@@ -14,7 +14,7 @@ npm install
 npm run dev
 ```
 
-O `npm run dev` abre em **modo demonstração**: os dados ficam só no navegador (entre com `demo@lsb.edu.br`; no admin, qualquer e-mail). Para usar o banco real no dev, copie `.env.example` para `.env.local`.
+O `npm run dev` abre em **modo demonstração**: os dados ficam só no navegador (entre com `demo@lsb.edu.br`; o código aparece na própria tela; no admin, qualquer e-mail). Para usar o banco real no dev, copie `.env.example` para `.env.local`.
 
 `npm run build` já usa o banco real (`.env.production`). Publique a pasta `dist`; Vercel e Netlify já estão configurados para a rota `/admin`.
 
@@ -31,6 +31,7 @@ Usa o **mesmo projeto Supabase do portfolio** (`link_portfolio`). Tudo do Demo D
 | `demoday_app_attendees` | e-mails liberados (nome, empresa, último acesso) | equipe |
 | `demoday_app_ratings` | nota e interesses por pessoa × startup | equipe |
 | `demoday_app_sessions` | tokens de sessão do público | ninguém (só funções) |
+| `demoday_app_login_codes` | códigos de confirmação (só o hash), validade e tentativas | ninguém (só funções) |
 
 ### Dados das startups vêm do portfolio
 
@@ -51,7 +52,9 @@ Para o "Entrar com Google" voltar para o Demo Day (e não para o portfolio), a U
 - O público nunca lê as tabelas de inscritos ou respostas. Login e envio passam por funções `SECURITY DEFINER` (`demoday_app_login`, `demoday_app_my_ratings`, `demoday_app_submit_rating`) que validam o token de sessão.
 - Remover um e-mail no admin derruba a sessão dessa pessoa e apaga as respostas dela.
 - Com a votação encerrada, o banco recusa novos envios.
-- Como pedido, o acesso do público é só pelo e-mail (sem senha nem código): quem souber o e-mail de um inscrito consegue entrar como ele. Se isso virar problema, dá para trocar por um código enviado por e-mail sem mudar o resto.
+- Entrar exige um código de 6 dígitos enviado ao e-mail inscrito, em cada aparelho novo. O código vale 10 minutos, aceita 5 tentativas e o banco guarda só o hash (bcrypt). Limite de 1 código a cada 30 s e 5 a cada 15 min por pessoa.
+- O envio é da edge function `supabase/functions/demoday-app-send-code` (sem JWT), pelo Resend, com o remetente `NOTIFICATION_EMAIL_FROM` (padrão `Link Ventures <notificacoes@linkventures.com.br>`). Precisa do secret `RESEND_API_KEY` no projeto (Supabase → Edge Functions → Secrets) e do domínio verificado no Resend; sem a chave, o app mostra "Não conseguimos enviar o e-mail agora".
+- `demoday_app_login` (entrar só com e-mail) não é mais chamável pelo público.
 
 ## Estrutura
 

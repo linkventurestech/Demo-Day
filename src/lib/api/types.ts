@@ -120,7 +120,20 @@ export interface AdminData extends PublicData {
 }
 
 /** Erros de domínio que a UI traduz em mensagens. */
-export type ApiErrorCode = 'not_registered' | 'invalid_session' | 'voting_closed' | 'not_admin' | 'slot_taken' | 'stand_taken' | 'unknown';
+export type ApiErrorCode =
+  | 'not_registered'
+  | 'invalid_session'
+  | 'voting_closed'
+  | 'not_admin'
+  | 'slot_taken'
+  | 'stand_taken'
+  | 'invalid_email'
+  | 'rate_limited'
+  | 'email_unavailable'
+  | 'invalid_code'
+  | 'code_expired'
+  | 'too_many_attempts'
+  | 'unknown';
 
 export class ApiError extends Error {
   constructor(public code: ApiErrorCode, message?: string) {
@@ -133,7 +146,10 @@ export interface Api {
 
   // Público
   getPublicData(): Promise<PublicData>;
-  login(email: string): Promise<AttendeeSession>;
+  /** Envia um código de 6 dígitos ao e-mail inscrito. No modo demonstração devolve o código para mostrar na tela. */
+  requestCode(email: string): Promise<{ demoCode?: string }>;
+  /** Confere o código e abre a sessão do público neste aparelho. */
+  verifyCode(email: string, code: string): Promise<AttendeeSession>;
   myRatings(token: string): Promise<MyRating[]>;
   submitRating(token: string, startupId: string, score: number | null, interests: InterestId[]): Promise<void>;
 
