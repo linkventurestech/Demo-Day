@@ -5,8 +5,8 @@ import { ApiError, type AdminData, type Api, type Attendee, type Rating } from '
  * Backend local (localStorage) com as mesmas regras do banco, para testar o
  * app sem Supabase configurado. Os dados ficam só neste navegador.
  */
-// v9: 23 empresas (8 no Investment Round, 15 no Showcase) e mapa com 15 stands.
-const KEY = 'dd-demo-db-v9';
+// v11: 20 empresas (8 no Investment Round, 12 no Showcase, com a Senia), na ordem dos pitchs.
+const KEY = 'dd-demo-db-v11';
 
 interface Db extends AdminData {
   sessions: Record<string, string>; // token → attendee_id
