@@ -35,7 +35,7 @@ Usa o **mesmo projeto Supabase do portfolio** (`link_portfolio`). Tudo do Demo D
 
 ### Dados das startups vêm do portfolio
 
-Cada startup pode ser ligada à empresa no portfolio (campo "Empresa no portfolio" no painel). Ao ligar, e no botão **Atualizar do sistema** da página Startups, o banco copia de lá o logo, a descrição curta, "setor · estágio" e os founders ativos (quem está marcado como founder ou tem "founder" no cargo), com nome, cargo e foto. Nome, bloco, posição e stand continuam sendo do Demo Day. A cópia é feita pela função `demoday_app_sync_from_portfolio`, que só admin/link_staff chamam.
+Cada startup pode ser ligada à empresa no portfolio (campo "Empresa no portfolio" no painel). Ao ligar, e no botão **Atualizar do sistema** da página Startups, o banco copia de lá o logo, a descrição curta, "setor · estágio" e os founders ativos (quem está marcado como founder ou tem "founder" no cargo), com nome, cargo e foto. Nome, bloco, posição e stand continuam sendo do Demo Day. Para um founder aparecer com outro nome só no app (ex.: "Gabriela Robatine" em vez de "Gabriela Vital"), grave em `demoday_app_founder_names`; a sincronização usa esse nome. A cópia é feita pela função `demoday_app_sync_from_portfolio`, que só admin/link_staff chamam.
 
 ### Jurados vêm do portfolio
 
