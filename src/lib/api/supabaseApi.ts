@@ -1,7 +1,7 @@
 import { createClient, type PostgrestError } from '@supabase/supabase-js';
 import { ApiError, type Api, type ApiErrorCode, type AttendeeSession, type MyRating, type PortfolioCompany, type PublicData, type Startup } from './types';
 
-const KNOWN: ApiErrorCode[] = ['not_registered', 'invalid_session', 'voting_closed'];
+const KNOWN: ApiErrorCode[] = ['not_registered', 'invalid_session', 'voting_closed', 'invalid_code', 'code_expired', 'too_many_attempts', 'rate_limited'];
 
 // Tabelas no projeto do portfolio, prefixadas para não colidir (ver supabase/migrations).
 const T = {
@@ -14,7 +14,7 @@ const T = {
 } as const;
 
 // No banco o bloco da startup é `block_id`; no app, `category_id`.
-const STARTUP_COLS = 'id, category_id:block_id, position, name, tagline, summary, logo_url, founders, stand, portfolio_company_id';
+const STARTUP_COLS = 'id, category_id:block_id, position, name, tagline, summary, logo_url, founders, stand, portfolio_company_id, website_url, instagram_url';
 const toRow = ({ category_id, ...s }: Partial<Startup>) => ({ ...s, ...(category_id ? { block_id: category_id } : {}) });
 
 function fail(error: PostgrestError | Error | null): never {
@@ -47,8 +47,19 @@ export function createSupabaseApi(url: string, key: string): Api {
     mode: 'supabase',
     getPublicData,
 
-    async login(email) {
-      return ok(await db.rpc('demoday_app_login', { p_email: email })) as AttendeeSession;
+    async requestCode(email) {
+      // A edge function responde 200 com { ok } ou { error: código conhecido }.
+      const { data, error } = await db.functions.invoke('demoday-app-send-code', { body: { email } });
+      if (error) throw new ApiError('email_unavailable', error.message);
+      const err = (data as { error?: ApiErrorCode } | null)?.error;
+      if (err) throw new ApiError(err);
+      return {};
+    },
+    async verifyCode(email, code) {
+      const res = ok(await db.rpc('demoday_app_verify_code', { p_email: email, p_code: code })) as AttendeeSession & { error?: ApiErrorCode };
+      // Código errado volta como resultado (não como erro) para a tentativa ficar registrada.
+      if (res.error) throw new ApiError(res.error);
+      return res;
     },
     async myRatings(token) {
       return ok(await db.rpc('demoday_app_my_ratings', { p_token: token })) as MyRating[];

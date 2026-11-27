@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { INTERESTS, type Startup } from '../lib/api';
 import { errorMessage } from '../lib/errors';
 import { initials, pad, pitchIndex, shortName, type Block } from '../lib/lineup';
-import { Check, Chevron, Logo } from '../ui';
+import { instagramLabel, siteLabel } from '../lib/links';
+import { Check, Chevron, Globe, InstagramIcon, Logo } from '../ui';
 import type { Draft } from './PublicApp';
 
 const LABELS = ['Toque para avaliar', 'Fraco', 'Regular', 'Bom', 'Muito bom', 'Excelente'];
@@ -67,11 +68,27 @@ export function Detail({ startup: co, blocks, draft, sent, votingOpen, onChange,
           </div>
         </div>
 
-        {co.stand != null && (
-          <button type="button" className="stand-link" onClick={onMap}>
-            <b>Stand {pad(co.stand)}</b> · Ver no mapa
-            <Chevron size={16} />
-          </button>
+        {(co.stand != null || co.website_url || co.instagram_url) && (
+          <div className="link-row">
+            {co.website_url && (
+              <a className="stand-link" href={co.website_url} target="_blank" rel="noreferrer">
+                <Globe />
+                {siteLabel(co.website_url)}
+              </a>
+            )}
+            {co.instagram_url && (
+              <a className="stand-link" href={co.instagram_url} target="_blank" rel="noreferrer">
+                <InstagramIcon />
+                {instagramLabel(co.instagram_url)}
+              </a>
+            )}
+            {co.stand != null && (
+              <button type="button" className="stand-link" onClick={onMap}>
+                <b>Stand {pad(co.stand)}</b> · Ver no mapa
+                <Chevron size={16} />
+              </button>
+            )}
+          </div>
         )}
 
         {co.summary && <p className="summary">{co.summary}</p>}

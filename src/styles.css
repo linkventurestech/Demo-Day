@@ -275,3 +275,12 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
 .admin-plan .plan { max-width: 360px; }
 img.avatar { object-fit: cover; padding: 0; }
 .avatar.sm { width: 36px; height: 36px; font-size: 11px; }
+
+/* Código de confirmação */
+.login input.code-input { font-family: var(--mono); font-size: 26px; letter-spacing: 0.4em; text-align: center; }
+.login .demo-code { color: var(--gold); }
+.login-links { display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; }
+.linkbtn.light { color: var(--mist); }
+.linkbtn.light:disabled { opacity: 0.6; text-decoration: none; }
+.link-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.link-row .stand-link { text-decoration: none; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

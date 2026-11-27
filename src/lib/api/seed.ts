@@ -17,7 +17,8 @@ export const SEED_CATEGORIES: Category[] = [
 export const SEED_STARTUPS: Startup[] = [
   {
     id: 'centra', category_id: 'ss', position: 1, name: 'Centra', logo_url: null, stand: null,
-    tagline: 'Tecnologia · Validação',
+    website_url: 'https://www.centra.ia.br', instagram_url: 'https://www.instagram.com/centra.ed/',
+    tagline: '',
     summary: 'Melhoramos e mapeamos o nível de gestão emocional dos alunos.',
     founders: [
       { name: 'Felipe Calderan Gambarini', role: 'Co-founder' },
@@ -26,7 +27,8 @@ export const SEED_STARTUPS: Startup[] = [
   },
   {
     id: 'dressy', category_id: 'ss', position: 2, name: 'Dressy', logo_url: null, stand: null,
-    tagline: 'SaaS · Monetização Inicial',
+    website_url: 'https://dressy.app.br', instagram_url: 'https://www.instagram.com/try.dressy/',
+    tagline: '',
     summary: 'IA para ecommerce de moda feminina. Que transforma a experiência de compra com: Provador Virtual, Descubra seu tamanho e Personal Shopper guiam a cliente do look ao tamanho certo.',
     founders: [
       { name: 'Gabriela Mascarenhas Robatine Vital', role: 'Founder' },
@@ -35,7 +37,8 @@ export const SEED_STARTUPS: Startup[] = [
   },
   {
     id: 'trena', category_id: 'ss', position: 3, name: 'Trena', logo_url: null, stand: null,
-    tagline: 'Energia · Monetização Inicial',
+    website_url: 'https://trenaenergia.com', instagram_url: null,
+    tagline: '',
     summary: 'Plataforma de IA que lê dados de múltiplas distribuidoras, detecta cobranças indevidas automaticamente e entrega visão em tempo real de todo o portfólio evitando trabalho manual e recuperando dinheiro',
     founders: [
       { name: 'Pedro Gouveia Santos', role: 'Founder' },
@@ -45,7 +48,8 @@ export const SEED_STARTUPS: Startup[] = [
   },
   {
     id: 'stac', category_id: 'ss', position: 4, name: 'Stac', logo_url: null, stand: null,
-    tagline: 'Tecnologia · Tração',
+    website_url: 'https://www.trystac.com', instagram_url: 'https://www.instagram.com/trystac/',
+    tagline: '',
     summary: 'Plataforma de inferência para empresas que querem usar mais IA em produção sem o custo explodir, equilibrando qualidade, desempenho e custo.',
     founders: [
       { name: 'Diogo Chiapeta Garcia', role: 'Founder - CTO' },
@@ -54,7 +58,8 @@ export const SEED_STARTUPS: Startup[] = [
   },
   {
     id: 'drafted', category_id: 'ss', position: 5, name: 'Drafted', logo_url: null, stand: null,
-    tagline: 'Tecnologia · Monetização Inicial',
+    website_url: 'https://www.drafted.com.br', instagram_url: 'https://www.instagram.com/drafted.ag/',
+    tagline: '',
     summary: 'A Drafted é PR para a era da IA. Medimos como sua marca é interpretada por pessoas e por máquinas, montamos a estratégia e executamos conteúdo, presença e creators pra corrigir o que está errado.',
     founders: [
       { name: 'Isabela Ortunho Sliesoraitis', role: 'Founder' },
@@ -63,7 +68,8 @@ export const SEED_STARTUPS: Startup[] = [
   },
   {
     id: 'naoeummapa', category_id: 'ss', position: 6, name: 'NaoeumMapa', logo_url: null, stand: null,
-    tagline: 'Tecnologia · Monetização Inicial',
+    website_url: 'https://naoeummapa.app', instagram_url: 'https://www.instagram.com/naoeummapa/',
+    tagline: '',
     summary: 'Criamos mundos digitais que nascem da audiência e viram comunidades. Em 1 mês, +350 mil pessoas já constroem, disputam e interagem nos nossos jogos. Tudo feito por dois fundadores e agentes de IA.',
     founders: [
       { name: 'João Manoel Ammar de Carvalho', role: 'Founder' },
@@ -71,7 +77,8 @@ export const SEED_STARTUPS: Startup[] = [
   },
   {
     id: 'rodo-s', category_id: 'ss', position: 7, name: 'RODO-S', logo_url: null, stand: null,
-    tagline: 'Serviços · Monetização Inicial',
+    website_url: null, instagram_url: 'https://www.instagram.com/rodo_s.app?igsh=MWg3YWp4NzZrbHRjaQ==',
+    tagline: '',
     summary: 'A RODO-S é uma plataforma de inteligência e controle de diesel para frotas de caminhões-cegonha. Ela centraliza dados de abastecimento e operação para identificar desvios de consumo.',
     founders: [
       { name: 'Davi Generoso', role: 'Founder' },
@@ -80,7 +87,8 @@ export const SEED_STARTUPS: Startup[] = [
   },
   {
     id: 'lits', category_id: 'ss', position: 8, name: 'LITS', logo_url: null, stand: null,
-    tagline: 'Marketplace · Tração',
+    website_url: 'https://www.lits.social/', instagram_url: 'https://www.instagram.com/lits.social/',
+    tagline: '',
     summary: 'LITS é o clube digital de tênis: conecta jogadores por nível, organiza partidas, ranking e torneios, e dá às academias um sistema para gerir aulas, quadras e pagamentos.',
     founders: [
       { name: 'Arthur Watanabe Imanishi', role: 'Founder' },
@@ -88,7 +96,8 @@ export const SEED_STARTUPS: Startup[] = [
   },
   {
     id: 'agrosaf-radar', category_id: 'show', position: 1, name: 'Agrosaf Radar', logo_url: null, stand: null,
-    tagline: 'Agronegócio · Tração',
+    website_url: 'https://agrosafradar.com.br/', instagram_url: 'https://www.instagram.com/agrosafradar/',
+    tagline: '',
     summary: 'Vigilância por satélite para propriedades rurais: alertas de invasão, desmatamento e construção com prova documental, e análises de solo, crédito de carbono, conformidade ambiental e minérios.',
     founders: [
       { name: 'Valentino Arturo Crosara do Valle', role: 'Founder' },
@@ -96,7 +105,8 @@ export const SEED_STARTUPS: Startup[] = [
   },
   {
     id: 'groselia', category_id: 'show', position: 2, name: 'Groselia', logo_url: null, stand: null,
-    tagline: 'SaaS · Monetização Inicial',
+    website_url: 'https://groselia.com', instagram_url: 'https://www.instagram.com/trygroselia',
+    tagline: '',
     summary: 'Groselia é o Lovable do marketing. Você descreve o que quer no chat, a plataforma planeja o calendário, cria os posts na identidade da sua marca e publica.',
     founders: [
       { name: 'Danilo Lopes Parmegiani', role: 'Founder' },
@@ -105,7 +115,8 @@ export const SEED_STARTUPS: Startup[] = [
   },
   {
     id: 'persint', category_id: 'show', position: 3, name: 'Persint', logo_url: null, stand: null,
-    tagline: 'SaaS · Monetização Inicial',
+    website_url: 'https://persint.ai', instagram_url: 'https://www.instagram.com/numa.social?igsh=MWw0Y3RhNDNlanpsOA==',
+    tagline: '',
     summary: 'AI-Native Customer Experience. Experiência única em escala para seus clientes.',
     founders: [
       { name: 'Davi Moura Marson', role: 'Founder' },
@@ -115,7 +126,8 @@ export const SEED_STARTUPS: Startup[] = [
   },
   {
     id: 'monttco', category_id: 'show', position: 4, name: 'MonttCO', logo_url: null, stand: null,
-    tagline: 'Moda e Beleza · Tração',
+    website_url: 'https://www.monttco.com', instagram_url: 'https://www.instagram.com/monttco/',
+    tagline: '',
     summary: 'A MONTT CO. é uma marca de lifestyle e streetwear que une autenticidade, estilo e inovação. Criamos peças exclusivas, com identidade própria, para quem busca viver o lifestyle de viver a vida.',
     founders: [
       { name: 'Natalie Amaral Ferreira', role: 'CEO' },
@@ -126,7 +138,8 @@ export const SEED_STARTUPS: Startup[] = [
   },
   {
     id: 'nero-skincare-for-men', category_id: 'show', position: 5, name: 'Nero Skincare For Men', logo_url: null, stand: null,
-    tagline: 'Moda e Beleza · Validação',
+    website_url: 'https://www.neroformen.com', instagram_url: 'https://instagram.com/neroformenn',
+    tagline: '',
     summary: '',
     founders: [
       { name: 'Lorenzo de Oliveira Dias', role: 'CEO' },
@@ -135,7 +148,8 @@ export const SEED_STARTUPS: Startup[] = [
   },
   {
     id: 'mevo', category_id: 'show', position: 6, name: 'MEVO', logo_url: null, stand: null,
-    tagline: 'Construção e Imobiliário · Validação',
+    website_url: 'https://mevoia.com/?utm_source=ig&utm_medium=social&utm_content=link_in_bio', instagram_url: 'https://www.instagram.com/mevo.ia/',
+    tagline: '',
     summary: 'Infraestrutura de IA que gera demanda e automatiza a operação de corretores de alto padrão',
     founders: [
       { name: 'Martim Barcki Rocha Antunes', role: 'Founder' },
@@ -144,6 +158,7 @@ export const SEED_STARTUPS: Startup[] = [
   },
   {
     id: 'brinquedoteka', category_id: 'show', position: 7, name: 'Brinquedoteka', logo_url: null, stand: null,
+    website_url: null, instagram_url: null,
     tagline: '',
     summary: '',
     founders: [
@@ -151,7 +166,8 @@ export const SEED_STARTUPS: Startup[] = [
   },
   {
     id: 'odan-studio', category_id: 'show', position: 8, name: 'Odan Studio', logo_url: null, stand: null,
-    tagline: 'Entretenimento · Validação',
+    website_url: null, instagram_url: null,
+    tagline: '',
     summary: 'Estúdio de IP nativo de IA. Criamos e animamos personagens próprios para marcas: personagens que viram conteúdo, audiência e ativo. Em vez de alugar atenção, a marca constrói a dela.',
     founders: [
       { name: 'Letícia Guimarães de Oliveira Crnkovic', role: 'Founder' },
@@ -159,7 +175,8 @@ export const SEED_STARTUPS: Startup[] = [
   },
   {
     id: 'how', category_id: 'show', position: 9, name: 'How', logo_url: null, stand: null,
-    tagline: 'Saúde e Bem-estar · Tração',
+    website_url: null, instagram_url: null,
+    tagline: '',
     summary: '',
     founders: [
       { name: 'João Lucas Coutinho Ramos', role: 'CEO' },
@@ -168,7 +185,8 @@ export const SEED_STARTUPS: Startup[] = [
   },
   {
     id: 'vitra-energy', category_id: 'show', position: 10, name: 'Vitra Energy', logo_url: null, stand: null,
-    tagline: 'Saúde e Bem-estar · Validação',
+    website_url: 'https://shopvitra.com.br/', instagram_url: 'https://www.instagram.com/heyvitra?igsi=MXA0bXBxbzR6aXVqMA%3D%3D&utm_source=qr',
+    tagline: '',
     summary: 'A Vitra Energy é um energético natural e funcional para jovens que buscam energia, foco e vitalidade. Com cafeína natural e ingredientes funcionais, acompanha uma rotina ativa, saudável e dinâmica.',
     founders: [
       { name: 'Fernanda Knijnik', role: 'Founder' },
@@ -176,7 +194,8 @@ export const SEED_STARTUPS: Startup[] = [
   },
   {
     id: 'auro-financas', category_id: 'show', position: 11, name: 'Auro Finanças', logo_url: null, stand: null,
-    tagline: 'Fintech · Validação',
+    website_url: 'https://aurofinancas.com/', instagram_url: null,
+    tagline: '',
     summary: 'Ajudamos pessoas a organizarem suas vidas financeiras e a começarem a investir.',
     founders: [
       { name: 'Pedro de Melo Cruz Avena', role: 'Founder' },
@@ -184,7 +203,8 @@ export const SEED_STARTUPS: Startup[] = [
   },
   {
     id: 'senia', category_id: 'show', position: 12, name: 'Senia', logo_url: null, stand: null,
-    tagline: 'Saúde e Bem-estar · Monetização Inicial',
+    website_url: 'https://usesenia.com', instagram_url: null,
+    tagline: '',
     summary: '',
     founders: [
       { name: 'Davi Fernandes Rizzo', role: 'Co-Founder' },
