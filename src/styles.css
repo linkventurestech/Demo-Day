@@ -282,3 +282,5 @@ img.avatar { object-fit: cover; padding: 0; }
 .login-links { display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; }
 .linkbtn.light { color: var(--mist); }
 .linkbtn.light:disabled { opacity: 0.6; text-decoration: none; }
+.link-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.link-row .stand-link { text-decoration: none; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

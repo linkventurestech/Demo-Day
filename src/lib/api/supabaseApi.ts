@@ -14,7 +14,7 @@ const T = {
 } as const;
 
 // No banco o bloco da startup é `block_id`; no app, `category_id`.
-const STARTUP_COLS = 'id, category_id:block_id, position, name, tagline, summary, logo_url, founders, stand, portfolio_company_id';
+const STARTUP_COLS = 'id, category_id:block_id, position, name, tagline, summary, logo_url, founders, stand, portfolio_company_id, website_url, instagram_url';
 const toRow = ({ category_id, ...s }: Partial<Startup>) => ({ ...s, ...(category_id ? { block_id: category_id } : {}) });
 
 function fail(error: PostgrestError | Error | null): never {

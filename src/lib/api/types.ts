@@ -51,6 +51,8 @@ export interface Startup {
   stand: number | null;
   /** Empresa no portfolio de onde vêm logo, descrição e founders. */
   portfolio_company_id?: string | null;
+  website_url?: string | null;
+  instagram_url?: string | null;
 }
 
 export interface Juror {

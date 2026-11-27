@@ -3,6 +3,7 @@ import { api, type Founder, type PortfolioCompany, type Startup } from '../lib/a
 import { errorMessage } from '../lib/errors';
 import { toSquareDataUrl } from '../lib/image';
 import { buildLineup, initials, pad } from '../lib/lineup';
+import { normalizeUrl } from '../lib/links';
 import { STAND_COUNT, standOccupants } from '../lib/stands';
 import { StandMap } from '../public/StandMap';
 import { ConfirmButton, Logo } from '../ui';
@@ -75,7 +76,13 @@ export function Startups({ data, reload }: PageProps) {
     setErr('');
     try {
       const before = data.startups.find((s) => s.id === form.id);
-      const id = await api.saveStartup({ ...form, name: form.name.trim(), founders: form.founders.filter((p) => p.name.trim()) });
+      const id = await api.saveStartup({
+        ...form,
+        name: form.name.trim(),
+        founders: form.founders.filter((p) => p.name.trim()),
+        website_url: normalizeUrl(form.website_url ?? ''),
+        instagram_url: normalizeUrl(form.instagram_url ?? '', true),
+      });
       // Ligou agora a uma empresa do portfolio: já traz logo, descrição e founders de lá.
       if (form.portfolio_company_id && form.portfolio_company_id !== before?.portfolio_company_id) await api.syncFromPortfolio?.(id);
       await reload();
@@ -265,9 +272,19 @@ export function Startups({ data, reload }: PageProps) {
                   })}
                 </select>
               </label>
+              <div className="grid2">
+                <label className="field">
+                  <span>Site</span>
+                  <input className="input" placeholder="empresa.com.br" value={form.website_url ?? ''} onChange={(e) => set('website_url', e.target.value)} />
+                </label>
+                <label className="field">
+                  <span>Instagram</span>
+                  <input className="input" placeholder="@perfil" value={form.instagram_url ?? ''} onChange={(e) => set('instagram_url', e.target.value)} />
+                </label>
+              </div>
               <label className="field">
-                <span>Linha de apoio</span>
-                <input className="input" placeholder="Setor · Estágio" value={form.tagline} onChange={(e) => set('tagline', e.target.value)} />
+                <span>Linha de apoio (opcional)</span>
+                <input className="input" placeholder="Aparece embaixo do nome; deixe vazio para não mostrar" value={form.tagline} onChange={(e) => set('tagline', e.target.value)} />
               </label>
               <label className="field">
                 <span>Resumo</span>

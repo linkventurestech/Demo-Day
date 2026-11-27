@@ -3,6 +3,7 @@ import { parseAttendees, toCsv } from './csv';
 import { buildLineup, pitchIndex, shortName } from './lineup';
 import { aggregate, connectionRows } from './results';
 import { PLAN, planHeight, standLayout, standOccupants } from './stands';
+import { instagramLabel, normalizeUrl, siteLabel } from './links';
 import { SEED_CATEGORIES, SEED_STARTUPS } from './api/seed';
 import type { Rating } from './api/types';
 
@@ -110,4 +111,20 @@ it('shortName usa primeiro nome e último sobrenome', () => {
   expect(shortName('João Manoel Ammar de Carvalho')).toBe('João Carvalho');
   expect(shortName('Izabela Varotti')).toBe('Izabela Varotti');
   expect(shortName('  Italo  ')).toBe('Italo');
+});
+
+describe('links', () => {
+  it('completa site e Instagram digitados sem endereço', () => {
+    expect(normalizeUrl('usesenia.com')).toBe('https://usesenia.com');
+    expect(normalizeUrl('https://dressy.app.br')).toBe('https://dressy.app.br');
+    expect(normalizeUrl('@drafted.ag', true)).toBe('https://www.instagram.com/drafted.ag/');
+    expect(normalizeUrl('instagram.com/lits.social', true)).toBe('https://instagram.com/lits.social');
+    expect(normalizeUrl('  ')).toBeNull();
+  });
+
+  it('mostra domínio e @perfil', () => {
+    expect(siteLabel('https://www.centra.ia.br')).toBe('centra.ia.br');
+    expect(instagramLabel('https://www.instagram.com/heyvitra?igsi=MXA0&utm_source=qr')).toBe('@heyvitra');
+    expect(instagramLabel('https://www.instagram.com/try.dressy/')).toBe('@try.dressy');
+  });
 });
