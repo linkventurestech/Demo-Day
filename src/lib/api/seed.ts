@@ -31,7 +31,7 @@ export const SEED_STARTUPS: Startup[] = [
     tagline: '',
     summary: 'IA para ecommerce de moda feminina. Que transforma a experiência de compra com: Provador Virtual, Descubra seu tamanho e Personal Shopper guiam a cliente do look ao tamanho certo.',
     founders: [
-      { name: 'Gabriela Mascarenhas Robatine Vital', role: 'Founder' },
+      { name: 'Gabriela Robatine', role: 'Founder' },
       { name: 'Izabela Varotti', role: 'Co-founder' },
     ],
   },
